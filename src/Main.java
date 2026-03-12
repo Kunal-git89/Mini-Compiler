@@ -12,7 +12,7 @@ public class Main
 
         while(temp.type != Token.Token_type.EOF)
         {
-            System.out.println(temp.type + " " + temp.name + " " + temp.value);
+            temp.printToken();
             temp = lexer.nextToken();
         }
         System.out.println("Program Finished");

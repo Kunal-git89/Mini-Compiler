@@ -2,16 +2,29 @@ public class Token
 {
     enum Token_type
     {
-        Identifier , Constant,
+        Identifier , Constant , Range,
         Add , Minus , Multiply , Divide, Less , LE, Greater , GE, Equals , NotEquals,
-        Assign ,Semicolon,
+        Assign , Semicolon , Dots,
         Lp , Rp , LBrac , RBrac,
-        Let , If , Elseif , Else , While , Continue , Break , Input , Print,
+        Let , If , Elseif , Else , While , Continue , Break , Input , Print , Swap,
         Error , EOF , Start
     }
     public String name;
     public int value;
     public Token_type type;
+
+    public void printToken()
+    {
+        if(type == Token_type.Identifier)
+        {
+            System.out.println(type + " " + name);
+        }
+        else if(type == Token_type.Constant)
+        {
+            System.out.println(type + " " + value);
+        }
+        else System.out.println(type);
+    }
 
     public Token(Token_type t)
     {

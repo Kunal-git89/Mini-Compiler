@@ -133,6 +133,18 @@ public class Lexer
                             state = 0;
                             return new Token(Token.Token_type.Less);
 
+                        case '.' :
+                            if(peek() == '.')
+                            {
+                                advance();
+                                advance();
+                                state = 0;
+                                return new Token(Token.Token_type.Dots);
+                            }
+                            advance();
+                            state = 0;
+                            return new Token(Token.Token_type.Error);
+
                         case 'l' :
                             state = (peek() == 'e') ? 2 : 4;
                             continue;
@@ -161,6 +173,14 @@ public class Lexer
 
                         case 'b' :
                             state = peek() == 'r' ? 30 : 4;
+                            continue;
+
+                        case 'r' :
+                            state = peek() == 'a' ? 34 : 4;
+                            continue;
+
+                        case 's' :
+                            state = peek() == 'w' ? 38 : 4;
                             continue;
 
                         default :
@@ -479,6 +499,67 @@ public class Lexer
                         advance();
                         state = 0;
                         return new Token(Token.Token_type.Break);
+                    }
+                    state = 4;
+                    continue;
+                }
+
+                case 34 : //ra
+                {
+                    advance();
+                    state = peek() == 'n' ? 35 : 4;
+                    continue;
+                }
+
+                case 35 : // ran
+                {
+                    advance();
+                    state = peek() == 'g' ? 36 : 4;
+                    continue;
+                }
+
+                case 36 : //rang
+                {
+                    advance();
+                    state = peek() == 'e' ? 37 : 4;
+                    continue;
+                }
+
+                case 37 : //range keyword
+                {
+                    advance();
+                    if(!Character.isLetterOrDigit(peek()))
+                    {
+                        advance();
+                        state = 0;
+                        return new Token(Token.Token_type.Range);
+                    }
+                    state = 4;
+                    continue;
+                }
+
+                case 38 : //sw
+                {
+                    advance();
+                    state = peek() == 'a' ? 39 : 4;
+                    continue;
+                }
+
+                case 39 : //swa
+                {
+                    advance();
+                    state = peek() == 'p' ? 40 : 4;
+                    continue;
+                }
+
+                case 40 : //swap keyword
+                {
+                    advance();
+                    if(!Character.isLetterOrDigit(peek()))
+                    {
+                        advance();
+                        state = 0;
+                        return new Token(Token.Token_type.Swap);
                     }
                     state = 4;
                     continue;
