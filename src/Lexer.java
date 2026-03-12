@@ -61,6 +61,11 @@ public class Lexer
                             state = 0;
                             return new Token(Token.Token_type.Divide);
 
+                        case '%' :
+                            advance();
+                            state = 0;
+                            return new Token(Token.Token_type.Mod);
+
                         case '=' :
                             if(peek() == '=')
                             {

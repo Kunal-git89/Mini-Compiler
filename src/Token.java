@@ -3,7 +3,7 @@ public class Token
     enum Token_type
     {
         Identifier , Constant , Range,
-        Add , Minus , Multiply , Divide, Less , LE, Greater , GE, Equals , NotEquals,
+        Add , Minus , Multiply , Divide , Mod , Less , LE , Greater , GE, Equals , NotEquals,
         Assign , Semicolon , Dots,
         Lp , Rp , LBrac , RBrac,
         Let , If , Elseif , Else , While , Continue , Break , Input , Print , Swap,

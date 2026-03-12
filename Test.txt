@@ -13,12 +13,10 @@ else {
 
 while x < 50 {
     x = x + 1;
-    continue;
 }
-
+continue;
 break;
 
 swap x y;
 
-range(1..10);
 input x;
