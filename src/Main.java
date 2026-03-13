@@ -13,7 +13,5 @@ public class Main
 
         Parser parser = new Parser(lexer);
         List<AST.ASTNode> AST = parser.parse();
-
-        System.out.println("Program Finished");
     }
 }

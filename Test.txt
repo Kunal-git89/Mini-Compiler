@@ -1,3 +1,5 @@
+
+
 let x = 5;
 let y = 10;
 let r = 1..10;
@@ -21,6 +23,7 @@ while(x < y)
     elseif(x == 8)
     {
         print 200;
+        swap x y;
     }
     else
     {

@@ -5,16 +5,19 @@ public class Parser
     List<AST.ASTNode> Program = new ArrayList<>();
     private Lexer lexer;
     private Token currToken;
-
+    public int line;
 
     public  Parser(Lexer l)
     {
         lexer = l;
+        int i = lexer.line;
         currToken = lexer.nextToken();
+        line = i;
     }
 
     private void advance()
     {
+        line = lexer.line;
         currToken = lexer.nextToken();
     }
 
@@ -40,7 +43,7 @@ public class Parser
         {
             if(!parseStatement())
             {
-                System.out.println("Error while parsing in line : " + lexer.line);
+                System.out.println("Error while parsing in line : " + line);
                 return null;
             }
         }

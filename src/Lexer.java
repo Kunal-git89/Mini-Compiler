@@ -28,7 +28,7 @@ public class Lexer
             cchar++;
             temp = getcurchar();
         }while(Character.isWhitespace(temp));
-        c = getcurchar();
+        c = temp;
     }
 
     Token nextToken()
@@ -576,7 +576,7 @@ public class Lexer
             }
 
         }while(!Character.isWhitespace(c));
-        System.out.println("Lexical error in line : " + line);
+        System.out.println("Lexical error in line");
         return new Token(Token.Token_type.Error);
     }
 
@@ -584,5 +584,6 @@ public class Lexer
     {
         program = s;
         c = getcurchar();
+        advance();
     }
 }
