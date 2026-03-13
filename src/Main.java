@@ -1,4 +1,5 @@
 import java.nio.file.*;
+import java.util.*;
 
 public class Main
 {
@@ -10,11 +11,9 @@ public class Main
         Lexer lexer = new Lexer(s);
         Token temp = new Token();
 
-        while(temp.type != Token.Token_type.EOF)
-        {
-            temp.printToken();
-            temp = lexer.nextToken();
-        }
+        Parser parser = new Parser(lexer);
+        List<AST.ASTNode> AST = parser.parse();
+
         System.out.println("Program Finished");
     }
 }

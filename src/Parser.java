@@ -6,7 +6,8 @@ public class Parser
     private Lexer lexer;
     private Token currToken;
 
-    public void parser(Lexer l)
+
+    public  Parser(Lexer l)
     {
         lexer = l;
         currToken = lexer.nextToken();
@@ -37,6 +38,7 @@ public class Parser
         if(currToken.type == Token.Token_type.Start) advance();
         while(!checkCurrToken(Token.Token_type.EOF))
         {
+            currToken.printToken();
             if(!parseStatement())
             {
                 System.out.println("Error while parsing");
@@ -89,14 +91,19 @@ public class Parser
             case Token.Token_type.Continue :
                 advance();
                 if(!consume(Token.Token_type.Semicolon)) return false;
+                break;
 
             case Token.Token_type.Break :
                 advance();
                 if(!consume(Token.Token_type.Semicolon)) return false;
+                break;
 
             case Token.Token_type.If :
                 advance();
+                if(!parseIf()) return false;
+                break;
 
+            default : return false;
         }
         return true;
     }
@@ -104,14 +111,13 @@ public class Parser
     private boolean parseBlock()
     {
         if(!consume(Token.Token_type.LBrac)) return false;
-        if(!parseStatement()) return false;
+        while(!checkCurrToken(Token.Token_type.RBrac) && !checkCurrToken(Token.Token_type.EOF)) if(!parseStatement()) return false;
         if(!consume(Token.Token_type.RBrac)) return false;
         return true;
     }
 
     private boolean parseLetStmt()
     {
-        advance();
         if(!consume(Token.Token_type.Identifier)) return false;
         if(!consume(Token.Token_type.Assign)) return false;
         if(!parseExpression()) return false;
@@ -230,7 +236,7 @@ public class Parser
         while(checkCurrToken(Token.Token_type.Add) || checkCurrToken(Token.Token_type.Minus))
         {
             advance();
-            if(!parseFactor()) return true;
+            if(!parseFactor()) return false;
         }
         return true;
     }
@@ -263,6 +269,8 @@ public class Parser
                 if(!parseExpression()) return false;
                 if(!consume(Token.Token_type.Rp)) return false;
                 break;
+
+            default: return false;
         }
         return true;
     }

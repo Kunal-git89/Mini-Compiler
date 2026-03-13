@@ -1,22 +1,32 @@
-let x = 10;
-let y = 20;
+let x = 5;
+let y = 10;
+let r = 1..10;
 
-if x >= y {
-    print x;
-}
-elseif x == y {
-    print y;
-}
-else {
-    print 0;
-}
+input(x);
 
-while x < 50 {
-    x = x + 1;
-}
-continue;
-break;
+print x;
+print(x + y);
 
 swap x y;
 
-input x;
+while(x < y)
+{
+    print x;
+    x = x + 1;
+
+    if(x == 7)
+    {
+        print 100;
+    }
+    elseif(x == 8)
+    {
+        print 200;
+    }
+    else
+    {
+        print 300;
+    }
+}
+
+continue;
+break;
