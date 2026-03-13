@@ -38,10 +38,9 @@ public class Parser
         if(currToken.type == Token.Token_type.Start) advance();
         while(!checkCurrToken(Token.Token_type.EOF))
         {
-            currToken.printToken();
             if(!parseStatement())
             {
-                System.out.println("Error while parsing");
+                System.out.println("Error while parsing in line : " + lexer.line);
                 return null;
             }
         }

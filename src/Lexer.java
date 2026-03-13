@@ -1,7 +1,7 @@
 public class Lexer
 {
     String program;
-    int cchar = 0, state = 0, start = 0;
+    int cchar = 0, state = 0, start = 0 , line =1;
     char c;
 
     private char getcurchar()
@@ -18,9 +18,13 @@ public class Lexer
 
     private void advance()
     {
-        char temp;
+        char temp = getcurchar();
         do
         {
+            if(temp == '\n')
+            {
+                line ++;
+            }
             cchar++;
             temp = getcurchar();
         }while(Character.isWhitespace(temp));
@@ -572,6 +576,7 @@ public class Lexer
             }
 
         }while(!Character.isWhitespace(c));
+        System.out.println("Lexical error in line : " + line);
         return new Token(Token.Token_type.Error);
     }
 
