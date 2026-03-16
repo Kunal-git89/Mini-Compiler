@@ -1,6 +1,8 @@
+package Transpiler;
+
 public class Token
 {
-    enum Token_type
+    public enum Token_type
     {
         Identifier , Constant , Range,
         Add , Minus , Multiply , Divide , Mod , Less , LE , Greater , GE, Equals , NotEquals,

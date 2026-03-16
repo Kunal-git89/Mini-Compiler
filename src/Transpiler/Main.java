@@ -1,3 +1,7 @@
+package Transpiler;
+
+import Transpiler.Semantic.AST;
+
 import java.nio.file.*;
 import java.util.*;
 
@@ -9,7 +13,6 @@ public class Main
         s = Files.readString(Path.of("Test.txt"));    // Hardcode the file
 
         Lexer lexer = new Lexer(s);
-        Token temp = new Token();
 
         Parser parser = new Parser(lexer);
         List<AST.ASTNode> AST = parser.parse();

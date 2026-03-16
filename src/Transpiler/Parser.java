@@ -1,3 +1,6 @@
+package Transpiler;
+
+import Transpiler.Semantic.AST;
 import java.util.*;
 
 public class Parser
@@ -56,54 +59,72 @@ public class Parser
         switch (currToken.type)
         {
             case Token.Token_type.Let :
+            {
                 advance();
-                if(!parseLetStmt()) return false;
+
+                if (!parseLetStmt()) return false;
                 break;
+            }
 
             case Token.Token_type.Identifier:
+            {
                 advance();
                 if(!parseAssignStmt()) return false;
                 break;
-
+            }
             case Token.Token_type.Input :
+            {
                 advance();
-                if(!parseInputStmt()) return false;
+                if (!parseInputStmt()) return false;
                 break;
+            }
 
             case Token.Token_type.Print :
+            {
                 advance();
-                if(!parsePrint()) return false;
+                if (!parsePrint()) return false;
                 break;
+            }
 
             case Token.Token_type.Swap :
+            {
                 advance();
-                if(!consume(Token.Token_type.Identifier)) return false;
-                if(!consume(Token.Token_type.Identifier)) return false;
-                if(!consume(Token.Token_type.Semicolon)) return false;
+                if (!consume(Token.Token_type.Identifier)) return false;
+                if (!consume(Token.Token_type.Identifier)) return false;
+                if (!consume(Token.Token_type.Semicolon)) return false;
                 return true;
+            }
 
             case Token.Token_type.While :
+            {
                 advance();
-                if(!consume(Token.Token_type.Lp)) return false;
-                if(!parseExpression()) return false;
-                if(!consume(Token.Token_type.Rp)) return false;
-                if(!parseBlock()) return false;
+                if (!consume(Token.Token_type.Lp)) return false;
+                if (!parseExpression()) return false;
+                if (!consume(Token.Token_type.Rp)) return false;
+                if (!parseBlock()) return false;
                 return true;
+            }
 
             case Token.Token_type.Continue :
+            {
                 advance();
-                if(!consume(Token.Token_type.Semicolon)) return false;
+                if (!consume(Token.Token_type.Semicolon)) return false;
                 break;
+            }
 
             case Token.Token_type.Break :
+            {
                 advance();
-                if(!consume(Token.Token_type.Semicolon)) return false;
+                if (!consume(Token.Token_type.Semicolon)) return false;
                 break;
+            }
 
             case Token.Token_type.If :
+            {
                 advance();
-                if(!parseIf()) return false;
+                if (!parseIf()) return false;
                 break;
+            }
 
             default : return false;
         }
@@ -199,7 +220,7 @@ public class Parser
 
     private boolean parseExpression()
     {
-        if(!parseEquality()) return false;
+        if (!parseEquality()) return false;
         return true;
     }
 
