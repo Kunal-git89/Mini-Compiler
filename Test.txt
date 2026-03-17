@@ -11,6 +11,24 @@ print(x + y);
 
 swap x y;
 
+if(x == 7)
+    {
+        print 100;
+    }
+    elseif(x == 8)
+    {
+        print 200;
+        swap x y;
+    }
+    elseif(x == y)
+    {
+    print (x);
+    }
+    else
+    {
+        print 300;
+    }
+
 while(x < y)
 {
     print x;
@@ -24,6 +42,10 @@ while(x < y)
     {
         print 200;
         swap x y;
+    }
+    elseif(x == y)
+    {
+    print (x);
     }
     else
     {

@@ -1,11 +1,14 @@
 package Transpiler;
 
 import Transpiler.Semantic.AST;
+import Transpiler.Semantic.AST.*;
+
+import java.beans.Expression;
 import java.util.*;
 
 public class Parser
 {
-    List<AST.ASTNode> Program = new ArrayList<>();
+    List<ASTNode> Program = new ArrayList<>();
     private Lexer lexer;
     private Token currToken;
     public int line;
@@ -39,262 +42,458 @@ public class Parser
         return false;
     }
 
-    public List<AST.ASTNode> parse()
+    public List<ASTNode> parse()
     {
         if(currToken.type == Token.Token_type.Start) advance();
         while(!checkCurrToken(Token.Token_type.EOF))
         {
-            if(!parseStatement())
+            currToken.printToken();
+            ASTNode temp = parseStatement();
+            if(temp == null)
             {
                 System.out.println("Error while parsing in line : " + line);
                 return null;
             }
+            Program.add(temp);
         }
         System.out.println("Parsed successfully");
         return Program;
     }
 
-    private boolean parseStatement()
+    private ASTNode parseStatement()
     {
         switch (currToken.type)
         {
             case Token.Token_type.Let :
             {
                 advance();
-
-                if (!parseLetStmt()) return false;
-                break;
+                LetNode res = parseLetStmt();
+                if (res == null) return null;
+                return res;
             }
 
             case Token.Token_type.Identifier:
             {
-                advance();
-                if(!parseAssignStmt()) return false;
-                break;
+                AssignmentNode res = parseAssignStmt();
+                if(res == null) return null;
+                return res;
             }
             case Token.Token_type.Input :
             {
                 advance();
-                if (!parseInputStmt()) return false;
-                break;
+                InputNode res = parseInputStmt();
+                if (res == null) return null;
+                return res;
             }
 
             case Token.Token_type.Print :
             {
                 advance();
-                if (!parsePrint()) return false;
-                break;
+                PrintNode res = parsePrint();
+                if (res == null) return null;
+                return res;
             }
 
             case Token.Token_type.Swap :
             {
                 advance();
-                if (!consume(Token.Token_type.Identifier)) return false;
-                if (!consume(Token.Token_type.Identifier)) return false;
-                if (!consume(Token.Token_type.Semicolon)) return false;
-                return true;
+                SwapNode res = new SwapNode();
+                if (!checkCurrToken(Token.Token_type.Identifier)) return null;
+                res.left = currToken.name;
+                advance();
+                if (!checkCurrToken(Token.Token_type.Identifier)) return null;
+                res.right = currToken.name;
+                advance();
+                if (!consume(Token.Token_type.Semicolon)) return null;
+                return res;
             }
 
             case Token.Token_type.While :
             {
                 advance();
-                if (!consume(Token.Token_type.Lp)) return false;
-                if (!parseExpression()) return false;
-                if (!consume(Token.Token_type.Rp)) return false;
-                if (!parseBlock()) return false;
-                return true;
+                WhileNode res = new WhileNode();
+                if (!consume(Token.Token_type.Lp)) return null;
+
+                ExpressionNode e = parseExpression();
+                if (e == null) return null;
+                res.condition = e;
+
+                if (!consume(Token.Token_type.Rp)) return null;
+
+                BlockNode b = parseBlock();
+                if (b == null) return null;
+                res.block = b;
+
+                return res;
             }
 
             case Token.Token_type.Continue :
             {
                 advance();
-                if (!consume(Token.Token_type.Semicolon)) return false;
-                break;
+                if (!consume(Token.Token_type.Semicolon)) return null;
+                return new ContinueNode();
             }
 
             case Token.Token_type.Break :
             {
                 advance();
-                if (!consume(Token.Token_type.Semicolon)) return false;
-                break;
+                if (!consume(Token.Token_type.Semicolon)) return null;
+                return new BreakNode();
             }
 
             case Token.Token_type.If :
             {
                 advance();
-                if (!parseIf()) return false;
-                break;
+                IfNode res = parseIf();
+                if (res == null) return null;
+                return res;
             }
 
-            default : return false;
+            default : return null;
         }
-        return true;
     }
 
-    private boolean parseBlock()
+    private BlockNode parseBlock()
     {
-        if(!consume(Token.Token_type.LBrac)) return false;
-        while(!checkCurrToken(Token.Token_type.RBrac) && !checkCurrToken(Token.Token_type.EOF)) if(!parseStatement()) return false;
-        if(!consume(Token.Token_type.RBrac)) return false;
-        return true;
+        BlockNode res = new BlockNode();
+        if(!consume(Token.Token_type.LBrac)) return null;
+        while(!checkCurrToken(Token.Token_type.RBrac) && !checkCurrToken(Token.Token_type.EOF))
+        {
+            ASTNode temp = parseStatement();
+            if (temp == null) return null;
+            res.codeSnippet.add(temp);
+        }
+        if(!consume(Token.Token_type.RBrac)) return null;
+        return res;
     }
 
-    private boolean parseLetStmt()
+    private LetNode parseLetStmt()
     {
-        if(!consume(Token.Token_type.Identifier)) return false;
-        if(!consume(Token.Token_type.Assign)) return false;
-        if(!parseExpression()) return false;
-        if(!consume(Token.Token_type.Semicolon)) return false;
-        return true;
+        LetNode res = new LetNode();
+        if(!checkCurrToken(Token.Token_type.Identifier)) return null;
+        res.name = currToken.name;
+        advance();
+        if(!consume(Token.Token_type.Assign)) return null;
+        ExpressionNode temp = parseExpression();
+        if(temp == null) return null;
+        res.expression = temp;
+        if(!consume(Token.Token_type.Semicolon)) return null;
+        return res;
     }
 
-    private boolean parseAssignStmt()
+    private AssignmentNode parseAssignStmt()
     {
-        if(!consume(Token.Token_type.Assign)) return false;
-        if(!parseExpression()) return false;
-        if(!consume(Token.Token_type.Semicolon)) return false;
-        return true;
+        AssignmentNode res = new AssignmentNode();
+        res.name = currToken.name;
+        advance();
+        if(!consume(Token.Token_type.Assign)) return null;
+        ExpressionNode temp = parseExpression();
+        if(temp == null) return null;
+        res.expression = temp;
+        if(!consume(Token.Token_type.Semicolon)) return null;
+        return res;
     }
 
-    private boolean parseInputStmt()
+    private InputNode parseInputStmt()
     {
+        InputNode res = new InputNode();
         if(checkCurrToken(Token.Token_type.Identifier))
         {
+            res.name = currToken.name;
             advance();
         }
         else if(checkCurrToken(Token.Token_type.Lp))
         {
             advance();
-            if(!consume(Token.Token_type.Identifier)) return false;
-            if(!consume(Token.Token_type.Rp)) return false;
+            if(!checkCurrToken(Token.Token_type.Identifier)) return null;
+            res.name = currToken.name;
+            advance();
+            if(!consume(Token.Token_type.Rp)) return null;
         }
-        if(!consume(Token.Token_type.Semicolon)) return false;
-        return true;
+        if(!consume(Token.Token_type.Semicolon)) return null;
+        return res;
     }
 
-    private boolean parsePrint()
+    private PrintNode parsePrint()
     {
+        PrintNode res = new PrintNode();
         if(checkCurrToken(Token.Token_type.Lp))
         {
             advance();
-            if(!parseExpression()) return false;
-            if(!consume(Token.Token_type.Rp)) return false;
+            ExpressionNode temp = parseExpression();
+            if(temp == null) return null;
+            res.expression = temp;
+            if(!consume(Token.Token_type.Rp)) return null;
         }
         else
         {
-            if(!parseExpression()) return false;
+            ExpressionNode temp = parseExpression();
+            if(temp == null) return null;
+            res.expression = temp;
         }
-        if(!consume(Token.Token_type.Semicolon)) return false;
-        return true;
+        if(!consume(Token.Token_type.Semicolon)) return null;
+        return res;
     }
 
-    private boolean parseIf()
+    private IfNode parseIf()
     {
-        if(!consume(Token.Token_type.Lp)) return false;
-        if(!parseExpression()) return false;
-        if(!consume(Token.Token_type.Rp)) return false;
-        if(!parseBlock()) return false;
-        if(!parseElseIfStmt()) return false;
-        if(!parseElseStmt()) return false;
-        return true;
-    }
+        IfNode res = new IfNode();
+        if(!consume(Token.Token_type.Lp)) return null;
+        ExpressionNode e = parseExpression();
+        if(e == null) return null;
+        res.condition = e;
+        if(!consume(Token.Token_type.Rp)) return null;
+        BlockNode b = parseBlock();
+        if(b == null) return null;
+        res.block = b;
 
-    private boolean parseElseIfStmt()
-    {
-        while(checkCurrToken(Token.Token_type.Elseif))
+        if(checkCurrToken(Token.Token_type.Elseif))
         {
-            if(!consume(Token.Token_type.Elseif)) return false;
-            if(!consume(Token.Token_type.Lp)) return false;
-            if(!parseExpression()) return false;
-            if(!consume(Token.Token_type.Rp)) return false;
-            if(!parseBlock()) return false;
+            res.elseifPart = new ArrayList<>();
+            ElseifNode ei = parseElseIfStmt();
+            while (ei != null) {
+                res.elseifPart.add(ei);
+                ei = parseElseIfStmt();
+            }
         }
-        return true;
+
+        if(checkCurrToken(Token.Token_type.Else))
+        {
+            ElseNode el = parseElseStmt();
+            if (el == null) return null;
+        }
+        return res;
     }
 
-    private boolean parseElseStmt()
+    private ElseifNode parseElseIfStmt()
     {
-        if(consume(Token.Token_type.Else)) if(!parseBlock()) return false;
-        return true;
+        ElseifNode res = new ElseifNode();
+        if(consume(Token.Token_type.Elseif))
+        {
+            if(!consume(Token.Token_type.Lp)) return null;
+            ExpressionNode e = parseExpression();
+            if(e == null) return null;
+            res.condition = e;
+            if(!consume(Token.Token_type.Rp)) return null;
+            BlockNode b = parseBlock();
+            if(b == null) return null;
+            return res;
+        }
+        else return null;
     }
 
-    private boolean parseExpression()
+    private ElseNode parseElseStmt()
     {
-        if (!parseEquality()) return false;
-        return true;
+        ElseNode res = new ElseNode();
+        if(consume(Token.Token_type.Else))
+        {
+            BlockNode b = parseBlock();
+            if(b == null) return null;
+        }
+        return res;
     }
 
-    private boolean parseEquality()
+    private ExpressionNode parseExpression()
     {
-        if(!parseComparision()) return false;
+        ExpressionNode temp = parseEquality();
+        if (temp == null) return null;
+        return temp;
+    }
+
+    private ExpressionNode parseEquality()
+    {
+        ExpressionNode res = new ExpressionNode();
+        res.leftNode = parseComparision();
+        if(res.leftNode == null) return null;
+        res.op = res.leftNode.op;
+
+        ExpressionNode prev = new ExpressionNode();
+        prev = res;
+        ExpressionNode curr = new ExpressionNode();
         while (checkCurrToken(Token.Token_type.Equals) || checkCurrToken(Token.Token_type.NotEquals))
         {
+
+            switch(currToken.type)
+            {
+                case Token.Token_type.Equals:
+                {
+                    curr.op = ExpressionNode.opType.Equals;
+                    break;
+                }
+                case Token.Token_type.NotEquals:
+                {
+                    curr.op = ExpressionNode.opType.NotEquals;
+                    break;
+                }
+            }
             advance();
-            if(!parseComparision()) return false;
+            curr.rightNode = parseComparision();
+            if(curr.rightNode == null) return null;
+            curr.leftNode = prev;
+            prev = curr;
         }
-        return true;
+        return res;
     }
 
-    private boolean parseComparision()
+    private ExpressionNode parseComparision()
     {
-        if(!parseRangeExp()) return false;
+        ExpressionNode res = new ExpressionNode();
+        res.leftNode = parseRangeExp();
+        if(res.leftNode == null) return null;
+        res.op = res.leftNode.op;
+
+        ExpressionNode prev = new ExpressionNode();
+        prev = res;
+        ExpressionNode curr = new ExpressionNode();
         while(checkCurrToken(Token.Token_type.Less) || checkCurrToken(Token.Token_type.LE) || checkCurrToken(Token.Token_type.Greater) || checkCurrToken(Token.Token_type.GE))
         {
+            switch(currToken.type)
+            {
+                case Token.Token_type.Less :
+                {
+                    curr.op = ExpressionNode.opType.Less;
+                    break;
+                }
+                case Token.Token_type.LE :
+                {
+                    curr.op = ExpressionNode.opType.LE;
+                    break;
+                }
+                case Token.Token_type.Greater :
+                {
+                    curr.op = ExpressionNode.opType.Greater;
+                    break;
+                }
+                case Token.Token_type.GE :
+                {
+                    curr.op = ExpressionNode.opType.GE;
+                    break;
+                }
+            }
             advance();
-            if(!parseRangeExp()) return false;
+            curr.rightNode = parseRangeExp();
+            if(curr.rightNode == null) return null;
+            curr.leftNode = prev;
+            prev = curr;
         }
-        return true;
+        return res;
     }
 
-    private boolean parseRangeExp()
+    private ExpressionNode parseRangeExp()
     {
-        if(!parseTerm()) return false;
-        if(consume(Token.Token_type.Dots)) if(!parseTerm()) return false;
-        return true;
+        ExpressionNode res = new ExpressionNode();
+        res.leftNode = parseTerm();
+        if(res.leftNode == null) return null;
+        if(consume(Token.Token_type.Dots))
+        {
+            res.rightNode = parseTerm();
+            if(res.rightNode == null) return null;
+            res.op = ExpressionNode.opType.Range;
+            return res;
+        }
+        return res.leftNode;
     }
 
-    private boolean parseTerm()
+    private ExpressionNode parseTerm()
     {
-        if(!parseFactor()) return false;
+        ExpressionNode res = new ExpressionNode();
+        res.leftNode = parseFactor();
+        if(res.leftNode == null) return null;
+        res.op = res.leftNode.op;
+
+        ExpressionNode prev = new ExpressionNode();
+        prev = res;
+        ExpressionNode curr = new ExpressionNode();
+
         while(checkCurrToken(Token.Token_type.Add) || checkCurrToken(Token.Token_type.Minus))
         {
+            switch(currToken.type)
+            {
+                case Token.Token_type.Multiply:
+                {
+                    curr.op = ExpressionNode.opType.Add;
+                    break;
+                }
+                case Token.Token_type.Divide:
+                {
+                    curr.op = ExpressionNode.opType.Minus;
+                    break;
+                }
+            }
             advance();
-            if(!parseFactor()) return false;
+            curr.rightNode = parseFactor();
+            if(curr.rightNode == null) return null;
+            curr.leftNode = prev;
+            prev = curr;
         }
-        return true;
+        return res;
     }
 
-    private boolean parseFactor()
+    private ExpressionNode parseFactor()
     {
-        if(!parsePrimary()) return false;
+        ExpressionNode res = new ExpressionNode();
+        res.leftNode = parsePrimary();
+        if(res.leftNode == null) return null;
+        res.op = res.leftNode.op;
+
+        ExpressionNode prev = new ExpressionNode();
+        prev = res;
+        ExpressionNode curr = new ExpressionNode();
         while(checkCurrToken(Token.Token_type.Multiply) || checkCurrToken(Token.Token_type.Divide) || checkCurrToken(Token.Token_type.Mod))
         {
+            switch(currToken.type)
+            {
+                case Token.Token_type.Multiply :
+                {
+                    curr.op = ExpressionNode.opType.Multiply;
+                    break;
+                }
+                case Token.Token_type.Divide :
+                {
+                    curr.op = ExpressionNode.opType.Divide;
+                    break;
+                }
+                case Token.Token_type.Mod :
+                {
+                    curr.op = ExpressionNode.opType.Mod;
+                    break;
+                }
+            }
             advance();
-            if(!parsePrimary()) return false;
+            curr.rightNode = parsePrimary();
+            if(curr.rightNode == null) return null;
+            curr.leftNode = prev;
+            prev = curr;
         }
-        return true;
+        return res;
     }
 
-    private boolean parsePrimary()
+    private ExpressionNode parsePrimary()
     {
+        ExpressionNode temp = new ExpressionNode();
         switch (currToken.type)
         {
             case Token.Token_type.Identifier :
+                temp.op = ExpressionNode.opType.Identifier;
+                temp.leftNode = new IdentifierNode(currToken.name);
                 advance();
                 break;
 
             case Token.Token_type.Constant :
+                temp.op = ExpressionNode.opType.Constant;
+                temp.leftNode = new ConstantNode(currToken.value);
                 advance();
                 break;
 
             case Token.Token_type.Lp :
                 advance();
-                if(!parseExpression()) return false;
-                if(!consume(Token.Token_type.Rp)) return false;
+                temp = parseExpression();
+                if(temp == null) return null;
+                if(!consume(Token.Token_type.Rp)) return null;
                 break;
 
-            default: return false;
+            default: return null;
         }
-        return true;
+        return temp;
     }
 }

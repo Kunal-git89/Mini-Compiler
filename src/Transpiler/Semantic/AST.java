@@ -4,7 +4,7 @@ import java.util.*;
 
 public class AST
 {
-    public class ASTNode
+    public static class ASTNode
     {
         enum nodeType
         {
@@ -13,95 +13,118 @@ public class AST
         nodeType type;
     }
 
-    public class StatementNode extends ASTNode {}
+    public static class StatementNode extends ASTNode {}
 
-    public class BlockNode extends StatementNode
+    public static class BlockNode extends StatementNode
     {
-        public BlockNode() {type = nodeType.BlockNode;}
-        List<AST.ASTNode> snippet ;
+        public List<AST.ASTNode> codeSnippet;
+        public BlockNode()
+        {
+            type = nodeType.BlockNode;
+            codeSnippet = new ArrayList<>();
+        }
     }
 
-    public class LetNode extends StatementNode
+    public static class LetNode extends StatementNode
     {
         public LetNode() {type = nodeType.LetNode;}
-        String name ;
-        ExpressionNode expression;
+        public String name ;
+        public ExpressionNode expression;
     }
 
-    public class AssignmentNode extends StatementNode
+    public static class AssignmentNode extends StatementNode
     {
         public AssignmentNode() {type = nodeType.AssignmentNode;}
-        String name ;
-        ExpressionNode expression;
+        public String name ;
+        public ExpressionNode expression;
     }
 
-    public class InputNode extends StatementNode
+    public static class InputNode extends StatementNode
     {
         public InputNode() {type = nodeType.InputNode;}
-        String name;
+        public String name;
     }
 
-    public class PrintNode extends StatementNode
+    public static class PrintNode extends StatementNode
     {
         public PrintNode() {type = nodeType.PrintNode;}
-        ExpressionNode expression;
+        public ExpressionNode expression;
     }
 
-    public class IfNode extends StatementNode
+    public static class IfNode extends StatementNode
     {
-        public IfNode() {type = nodeType.IfNode;}
-        ExpressionNode condition;
-        BlockNode block;
-        List<AST.ElseifNode> elseifPart;
-        ElseNode elsePart;
+        public ExpressionNode condition;
+        public BlockNode block;
+        public List<AST.ElseifNode> elseifPart;
+        public ElseNode elsePart;
+        public IfNode()
+        {
+            type = nodeType.IfNode;
+        }
     }
 
-    public class ElseifNode extends StatementNode
+    public static class ElseifNode extends StatementNode
     {
         public ElseifNode() {type = nodeType.ElseIfNode;}
-        ExpressionNode condition;
-        BlockNode block;
+        public ExpressionNode condition;
+        public BlockNode block;
     }
 
-    public class ElseNode extends StatementNode
+    public static class ElseNode extends StatementNode
     {
         public ElseNode() {type = nodeType.ElseNode;}
-        BlockNode block;
+        public BlockNode block;
     }
 
-    public class SwapNode extends StatementNode
+    public static class SwapNode extends StatementNode
     {
         public SwapNode() {type = nodeType.SwapNode;}
-        String left , right;
+        public String left , right;
     }
 
-    public class WhileNode extends StatementNode
+    public static class WhileNode extends StatementNode
     {
         public WhileNode() {type = nodeType.WhileNode;}
-        ExpressionNode condition;
-        BlockNode block;
+        public ExpressionNode condition;
+        public BlockNode block;
     }
 
-    public class ContinueNode extends StatementNode {public ContinueNode() {type = nodeType.ContinueNode;}}
+    public static class ContinueNode extends StatementNode {public ContinueNode() {type = nodeType.ContinueNode;}}
 
-    public class BreakNode extends StatementNode {public BreakNode() {type = nodeType.BreakNode;}} // Stmt Nodes end here
+    public static class BreakNode extends StatementNode {public BreakNode() {type = nodeType.BreakNode;}} // Stmt Nodes end here
 
 
-    public class ExpressionNode extends ASTNode
+    public static class ExpressionNode extends ASTNode
     {
         public ExpressionNode() {type = nodeType.ExpressionNode;}
-        enum opType
+        public enum opType
         {
-            Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range
+            Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range , Less , LE , Greater , GE, Equals , NotEquals,
         }
-        ExpressionNode leftNode;
-        opType op;
-        ExpressionNode rightNode;
+        public ExpressionNode leftNode;
+        public opType op;
+        public ExpressionNode rightNode;
     }
 
-    public class IdentifierNode extends ExpressionNode { String name;}
+    public static class IdentifierNode extends ExpressionNode
+    {
+        public IdentifierNode () {}
+        public IdentifierNode(String s)
+        {
+            op = opType.Identifier;
+            name = s;
+        }
+        public String name;
+    }
 
-    public class ConstantNode extends ExpressionNode {int value;}
-
-    public class RangeNode extends ExpressionNode {int start , end;}
+    public static class ConstantNode extends ExpressionNode
+    {
+        public ConstantNode () {}
+        public ConstantNode(int v)
+        {
+            op = opType.Constant;
+            value = v;
+        }
+        int value;
+    }
 }
