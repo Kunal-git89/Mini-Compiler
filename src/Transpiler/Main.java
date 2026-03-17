@@ -9,8 +9,7 @@ public class Main
 {
     public static void main (String[] args) throws Exception
     {
-        String s = new String();
-        s = Files.readString(Path.of("Test.txt"));    // Hardcode the file
+        String s = Files.readString(Path.of("Test.txt")); // Hardcode the file
 
         Lexer lexer = new Lexer(s);
 

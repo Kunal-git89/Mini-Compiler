@@ -1,9 +1,6 @@
 package Transpiler;
 
-import Transpiler.Semantic.AST;
 import Transpiler.Semantic.AST.*;
-
-import java.beans.Expression;
 import java.util.*;
 
 public class Parser
@@ -47,7 +44,6 @@ public class Parser
         if(currToken.type == Token.Token_type.Start) advance();
         while(!checkCurrToken(Token.Token_type.EOF))
         {
-            currToken.printToken();
             ASTNode temp = parseStatement();
             if(temp == null)
             {
@@ -261,6 +257,7 @@ public class Parser
         {
             ElseNode el = parseElseStmt();
             if (el == null) return null;
+            res.elsePart = el;
         }
         return res;
     }
@@ -277,6 +274,7 @@ public class Parser
             if(!consume(Token.Token_type.Rp)) return null;
             BlockNode b = parseBlock();
             if(b == null) return null;
+            res.block = b;
             return res;
         }
         else return null;
@@ -289,6 +287,7 @@ public class Parser
         {
             BlockNode b = parseBlock();
             if(b == null) return null;
+            res.block = b;
         }
         return res;
     }
@@ -302,17 +301,12 @@ public class Parser
 
     private ExpressionNode parseEquality()
     {
-        ExpressionNode res = new ExpressionNode();
-        res.leftNode = parseComparision();
-        if(res.leftNode == null) return null;
-        res.op = res.leftNode.op;
+        ExpressionNode res = parseComparision();
+        if(res == null) return null;
 
-        ExpressionNode prev = new ExpressionNode();
-        prev = res;
-        ExpressionNode curr = new ExpressionNode();
         while (checkCurrToken(Token.Token_type.Equals) || checkCurrToken(Token.Token_type.NotEquals))
         {
-
+            ExpressionNode curr = new ExpressionNode();
             switch(currToken.type)
             {
                 case Token.Token_type.Equals:
@@ -329,24 +323,20 @@ public class Parser
             advance();
             curr.rightNode = parseComparision();
             if(curr.rightNode == null) return null;
-            curr.leftNode = prev;
-            prev = curr;
+            curr.leftNode = res;
+            res = curr;
         }
         return res;
     }
 
     private ExpressionNode parseComparision()
     {
-        ExpressionNode res = new ExpressionNode();
-        res.leftNode = parseRangeExp();
-        if(res.leftNode == null) return null;
-        res.op = res.leftNode.op;
+        ExpressionNode res = parseRangeExp();
+        if(res == null) return null;
 
-        ExpressionNode prev = new ExpressionNode();
-        prev = res;
-        ExpressionNode curr = new ExpressionNode();
         while(checkCurrToken(Token.Token_type.Less) || checkCurrToken(Token.Token_type.LE) || checkCurrToken(Token.Token_type.Greater) || checkCurrToken(Token.Token_type.GE))
         {
+            ExpressionNode curr = new ExpressionNode();
             switch(currToken.type)
             {
                 case Token.Token_type.Less :
@@ -373,48 +363,44 @@ public class Parser
             advance();
             curr.rightNode = parseRangeExp();
             if(curr.rightNode == null) return null;
-            curr.leftNode = prev;
-            prev = curr;
+            curr.leftNode = res;
+            res = curr;
         }
         return res;
     }
 
     private ExpressionNode parseRangeExp()
     {
-        ExpressionNode res = new ExpressionNode();
-        res.leftNode = parseTerm();
-        if(res.leftNode == null) return null;
+        ExpressionNode left = parseTerm();
+        if(left == null) return null;
         if(consume(Token.Token_type.Dots))
         {
+            ExpressionNode res = new ExpressionNode();
+            res.op = ExpressionNode.opType.Range;
             res.rightNode = parseTerm();
             if(res.rightNode == null) return null;
-            res.op = ExpressionNode.opType.Range;
+            res.leftNode = left;
             return res;
         }
-        return res.leftNode;
+        return left;
     }
 
     private ExpressionNode parseTerm()
     {
-        ExpressionNode res = new ExpressionNode();
-        res.leftNode = parseFactor();
-        if(res.leftNode == null) return null;
-        res.op = res.leftNode.op;
-
-        ExpressionNode prev = new ExpressionNode();
-        prev = res;
-        ExpressionNode curr = new ExpressionNode();
+        ExpressionNode res = parseFactor();
+        if(res == null) return null;
 
         while(checkCurrToken(Token.Token_type.Add) || checkCurrToken(Token.Token_type.Minus))
         {
+            ExpressionNode curr = new ExpressionNode();
             switch(currToken.type)
             {
-                case Token.Token_type.Multiply:
+                case Token.Token_type.Add:
                 {
                     curr.op = ExpressionNode.opType.Add;
                     break;
                 }
-                case Token.Token_type.Divide:
+                case Token.Token_type.Minus:
                 {
                     curr.op = ExpressionNode.opType.Minus;
                     break;
@@ -423,24 +409,20 @@ public class Parser
             advance();
             curr.rightNode = parseFactor();
             if(curr.rightNode == null) return null;
-            curr.leftNode = prev;
-            prev = curr;
+            curr.leftNode = res;
+            res = curr;
         }
         return res;
     }
 
     private ExpressionNode parseFactor()
     {
-        ExpressionNode res = new ExpressionNode();
-        res.leftNode = parsePrimary();
-        if(res.leftNode == null) return null;
-        res.op = res.leftNode.op;
+        ExpressionNode res = parsePrimary();
+        if(res == null) return null;
 
-        ExpressionNode prev = new ExpressionNode();
-        prev = res;
-        ExpressionNode curr = new ExpressionNode();
         while(checkCurrToken(Token.Token_type.Multiply) || checkCurrToken(Token.Token_type.Divide) || checkCurrToken(Token.Token_type.Mod))
         {
+            ExpressionNode curr = new ExpressionNode();
             switch(currToken.type)
             {
                 case Token.Token_type.Multiply :
@@ -462,38 +444,32 @@ public class Parser
             advance();
             curr.rightNode = parsePrimary();
             if(curr.rightNode == null) return null;
-            curr.leftNode = prev;
-            prev = curr;
+            curr.leftNode = res;
+            res = curr;
         }
         return res;
     }
 
     private ExpressionNode parsePrimary()
     {
-        ExpressionNode temp = new ExpressionNode();
         switch (currToken.type)
         {
             case Token.Token_type.Identifier :
-                temp.op = ExpressionNode.opType.Identifier;
-                temp.leftNode = new IdentifierNode(currToken.name);
                 advance();
-                break;
+                return new IdentifierNode(currToken.name);
 
             case Token.Token_type.Constant :
-                temp.op = ExpressionNode.opType.Constant;
-                temp.leftNode = new ConstantNode(currToken.value);
                 advance();
-                break;
+                return new ConstantNode(currToken.value);
 
             case Token.Token_type.Lp :
                 advance();
-                temp = parseExpression();
+                ExpressionNode temp = parseExpression();
                 if(temp == null) return null;
                 if(!consume(Token.Token_type.Rp)) return null;
-                break;
+                return temp;
 
             default: return null;
         }
-        return temp;
     }
 }
