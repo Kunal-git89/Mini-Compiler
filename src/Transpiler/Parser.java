@@ -93,7 +93,7 @@ public class Parser
             case Token.Token_type.Swap :
             {
                 advance();
-                SwapNode res = new SwapNode();
+                SwapNode res = new SwapNode(line);
                 if (!checkCurrToken(Token.Token_type.Identifier)) return null;
                 res.left = currToken.name;
                 advance();
@@ -107,7 +107,7 @@ public class Parser
             case Token.Token_type.While :
             {
                 advance();
-                WhileNode res = new WhileNode();
+                WhileNode res = new WhileNode(line);
                 if (!consume(Token.Token_type.Lp)) return null;
 
                 ExpressionNode e = parseExpression();
@@ -127,14 +127,14 @@ public class Parser
             {
                 advance();
                 if (!consume(Token.Token_type.Semicolon)) return null;
-                return new ContinueNode();
+                return new ContinueNode(line);
             }
 
             case Token.Token_type.Break :
             {
                 advance();
                 if (!consume(Token.Token_type.Semicolon)) return null;
-                return new BreakNode();
+                return new BreakNode(line);
             }
 
             case Token.Token_type.If :
@@ -151,7 +151,7 @@ public class Parser
 
     private BlockNode parseBlock()
     {
-        BlockNode res = new BlockNode();
+        BlockNode res = new BlockNode(line);
         if(!consume(Token.Token_type.LBrac)) return null;
         while(!checkCurrToken(Token.Token_type.RBrac) && !checkCurrToken(Token.Token_type.EOF))
         {
@@ -165,7 +165,7 @@ public class Parser
 
     private LetNode parseLetStmt()
     {
-        LetNode res = new LetNode();
+        LetNode res = new LetNode(line);
         if(!checkCurrToken(Token.Token_type.Identifier)) return null;
         res.name = currToken.name;
         advance();
@@ -179,7 +179,7 @@ public class Parser
 
     private AssignmentNode parseAssignStmt()
     {
-        AssignmentNode res = new AssignmentNode();
+        AssignmentNode res = new AssignmentNode(line);
         res.name = currToken.name;
         advance();
         if(!consume(Token.Token_type.Assign)) return null;
@@ -192,7 +192,7 @@ public class Parser
 
     private InputNode parseInputStmt()
     {
-        InputNode res = new InputNode();
+        InputNode res = new InputNode(line);
         if(checkCurrToken(Token.Token_type.Identifier))
         {
             res.name = currToken.name;
@@ -212,7 +212,7 @@ public class Parser
 
     private PrintNode parsePrint()
     {
-        PrintNode res = new PrintNode();
+        PrintNode res = new PrintNode(line);
         if(checkCurrToken(Token.Token_type.Lp))
         {
             advance();
@@ -233,7 +233,7 @@ public class Parser
 
     private IfNode parseIf()
     {
-        IfNode res = new IfNode();
+        IfNode res = new IfNode(line);
         if(!consume(Token.Token_type.Lp)) return null;
         ExpressionNode e = parseExpression();
         if(e == null) return null;
@@ -264,7 +264,7 @@ public class Parser
 
     private ElseifNode parseElseIfStmt()
     {
-        ElseifNode res = new ElseifNode();
+        ElseifNode res = new ElseifNode(line);
         if(consume(Token.Token_type.Elseif))
         {
             if(!consume(Token.Token_type.Lp)) return null;
@@ -282,7 +282,7 @@ public class Parser
 
     private ElseNode parseElseStmt()
     {
-        ElseNode res = new ElseNode();
+        ElseNode res = new ElseNode(line);
         if(consume(Token.Token_type.Else))
         {
             BlockNode b = parseBlock();
@@ -306,7 +306,7 @@ public class Parser
 
         while (checkCurrToken(Token.Token_type.Equals) || checkCurrToken(Token.Token_type.NotEquals))
         {
-            ExpressionNode curr = new ExpressionNode();
+            ExpressionNode curr = new ExpressionNode(line);
             switch(currToken.type)
             {
                 case Token.Token_type.Equals:
@@ -336,7 +336,7 @@ public class Parser
 
         while(checkCurrToken(Token.Token_type.Less) || checkCurrToken(Token.Token_type.LE) || checkCurrToken(Token.Token_type.Greater) || checkCurrToken(Token.Token_type.GE))
         {
-            ExpressionNode curr = new ExpressionNode();
+            ExpressionNode curr = new ExpressionNode(line);
             switch(currToken.type)
             {
                 case Token.Token_type.Less :
@@ -375,7 +375,7 @@ public class Parser
         if(left == null) return null;
         if(consume(Token.Token_type.Dots))
         {
-            ExpressionNode res = new ExpressionNode();
+            ExpressionNode res = new ExpressionNode(line);
             res.op = ExpressionNode.opType.Range;
             res.rightNode = parseTerm();
             if(res.rightNode == null) return null;
@@ -392,7 +392,7 @@ public class Parser
 
         while(checkCurrToken(Token.Token_type.Add) || checkCurrToken(Token.Token_type.Minus))
         {
-            ExpressionNode curr = new ExpressionNode();
+            ExpressionNode curr = new ExpressionNode(line);
             switch(currToken.type)
             {
                 case Token.Token_type.Add:
@@ -422,7 +422,7 @@ public class Parser
 
         while(checkCurrToken(Token.Token_type.Multiply) || checkCurrToken(Token.Token_type.Divide) || checkCurrToken(Token.Token_type.Mod))
         {
-            ExpressionNode curr = new ExpressionNode();
+            ExpressionNode curr = new ExpressionNode(line);
             switch(currToken.type)
             {
                 case Token.Token_type.Multiply :
@@ -457,12 +457,12 @@ public class Parser
             case Token.Token_type.Identifier :
                 String name = currToken.name;
                 advance();
-                return new IdentifierNode(name);
+                return new IdentifierNode(name , line);
 
             case Token.Token_type.Constant :
                 int value = currToken.value;
                 advance();
-                return new ConstantNode(value);
+                return new ConstantNode(value , line);
 
             case Token.Token_type.Lp :
                 advance();

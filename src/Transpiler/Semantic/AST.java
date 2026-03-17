@@ -1,5 +1,6 @@
 package Transpiler.Semantic;
 
+import java.beans.Expression;
 import java.util.*;
 
 public class AST
@@ -12,6 +13,7 @@ public class AST
         }
         nodeType type;
         public void printNode() {}
+        public int line;
     }
 
     abstract public static class StatementNode extends ASTNode
@@ -23,10 +25,12 @@ public class AST
     public static class BlockNode extends StatementNode
     {
         public List<ASTNode> codeSnippet;
-        public BlockNode()
+        public BlockNode(){}
+        public BlockNode(int a)
         {
             type = nodeType.BlockNode;
             codeSnippet = new ArrayList<>();
+            line = a;
         }
 
         @Override
@@ -42,7 +46,12 @@ public class AST
 
     public static class LetNode extends StatementNode
     {
-        public LetNode() {type = nodeType.LetNode;}
+        public LetNode(){}
+        public LetNode(int a)
+        {
+            type = nodeType.LetNode;
+            line =a ;
+        }
         public String name ;
         public ExpressionNode expression;
         @Override
@@ -56,7 +65,12 @@ public class AST
 
     public static class AssignmentNode extends StatementNode
     {
-        public AssignmentNode() {type = nodeType.AssignmentNode;}
+        public AssignmentNode(){}
+        public AssignmentNode(int a)
+        {
+            type = nodeType.AssignmentNode;
+            line = a;
+        }
         public String name ;
         public ExpressionNode expression;
 
@@ -70,7 +84,12 @@ public class AST
 
     public static class InputNode extends StatementNode
     {
-        public InputNode() {type = nodeType.InputNode;}
+        public InputNode(){}
+        public InputNode(int a)
+        {
+            type = nodeType.InputNode;
+            line = a;
+        }
         public String name;
 
         @Override
@@ -82,7 +101,12 @@ public class AST
 
     public static class PrintNode extends StatementNode
     {
-        public PrintNode() {type = nodeType.PrintNode;}
+        public PrintNode(){}
+        public PrintNode(int a)
+        {
+            type = nodeType.PrintNode;
+            line = a;
+        }
         public ExpressionNode expression;
 
         @Override
@@ -98,9 +122,11 @@ public class AST
         public BlockNode block;
         public List<ElseifNode> elseifPart;
         public ElseNode elsePart;
-        public IfNode()
+        public IfNode(){}
+        public IfNode(int a)
         {
             type = nodeType.IfNode;
+            line = a;
         }
 
         @Override
@@ -121,7 +147,12 @@ public class AST
 
     public static class ElseifNode extends StatementNode
     {
-        public ElseifNode() {type = nodeType.ElseIfNode;}
+        public ElseifNode() {}
+        public ElseifNode(int a)
+        {
+            type = nodeType.ElseIfNode;
+            line = a;
+        }
         public ExpressionNode condition;
         public BlockNode block;
 
@@ -136,7 +167,12 @@ public class AST
 
     public static class ElseNode extends StatementNode
     {
-        public ElseNode() {type = nodeType.ElseNode;}
+        public ElseNode() {}
+        public ElseNode(int a)
+        {
+            type = nodeType.ElseNode;
+            line = a;
+        }
         public BlockNode block;
 
         @Override
@@ -149,7 +185,12 @@ public class AST
 
     public static class SwapNode extends StatementNode
     {
-        public SwapNode() {type = nodeType.SwapNode;}
+        public SwapNode() {}
+        public SwapNode(int a)
+        {
+            type = nodeType.SwapNode;
+            line = a;
+        }
         public String left , right;
 
         @Override
@@ -161,7 +202,12 @@ public class AST
 
     public static class WhileNode extends StatementNode
     {
-        public WhileNode() {type = nodeType.WhileNode;}
+        public WhileNode(){}
+        public WhileNode(int a)
+        {
+            type = nodeType.WhileNode;
+            line = a;
+        }
         public ExpressionNode condition;
         public BlockNode block;
 
@@ -176,9 +222,11 @@ public class AST
 
     public static class ContinueNode extends StatementNode
     {
-        public ContinueNode()
+        public ContinueNode(){}
+        public ContinueNode(int a)
         {
             type = nodeType.ContinueNode;
+            line = a;
         }
 
         @Override
@@ -189,9 +237,11 @@ public class AST
 
     public static class BreakNode extends StatementNode
     {
-        public BreakNode()
+        public BreakNode(){}
+        public BreakNode(int a)
         {
             type = nodeType.BreakNode;
+            line = a;
         }
 
         @Override
@@ -203,7 +253,12 @@ public class AST
 
     public static class ExpressionNode extends ASTNode
     {
-        public ExpressionNode() {type = nodeType.ExpressionNode;}
+        public ExpressionNode(){}
+        public ExpressionNode(int a)
+        {
+            type = nodeType.ExpressionNode;
+            line = a;
+        }
         public enum opType
         {
             Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range , Less , LE , Greater , GE, Equals , NotEquals,
@@ -223,10 +278,11 @@ public class AST
     public static class IdentifierNode extends ExpressionNode
     {
         public IdentifierNode () {}
-        public IdentifierNode(String s)
+        public IdentifierNode(String s , int a)
         {
             op = opType.Identifier;
             name = s;
+            line = a;
         }
         public String name;
         @Override
@@ -239,10 +295,11 @@ public class AST
     public static class ConstantNode extends ExpressionNode
     {
         public ConstantNode () {}
-        public ConstantNode(int v)
+        public ConstantNode(int v , int a)
         {
             op = opType.Constant;
             value = v;
+            line =a;
         }
         int value;
         @Override
