@@ -1,7 +1,8 @@
 package Transpiler;
 
-import Transpiler.Semantic.AST;
+import Transpiler.Semantic.AST.*;
 
+import java.beans.Expression;
 import java.nio.file.*;
 import java.util.*;
 
@@ -14,6 +15,11 @@ public class Main
         Lexer lexer = new Lexer(s);
 
         Parser parser = new Parser(lexer);
-        List<AST.ASTNode> AST = parser.parse();
+        List<ASTNode> program = parser.parse();
+
+        for(ASTNode node : program)
+        {
+            node.printNode();
+        }
     }
 }

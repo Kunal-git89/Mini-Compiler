@@ -455,12 +455,14 @@ public class Parser
         switch (currToken.type)
         {
             case Token.Token_type.Identifier :
+                String name = currToken.name;
                 advance();
-                return new IdentifierNode(currToken.name);
+                return new IdentifierNode(name);
 
             case Token.Token_type.Constant :
+                int value = currToken.value;
                 advance();
-                return new ConstantNode(currToken.value);
+                return new ConstantNode(value);
 
             case Token.Token_type.Lp :
                 advance();
