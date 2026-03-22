@@ -1,6 +1,5 @@
-package Transpiler.Semantic;
+package Transpiler;
 
-import java.beans.Expression;
 import java.util.*;
 
 public class AST

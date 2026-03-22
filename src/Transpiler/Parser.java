@@ -1,6 +1,6 @@
 package Transpiler;
 
-import Transpiler.Semantic.AST.*;
+import Transpiler.AST.*;
 import java.util.*;
 
 public class Parser
@@ -9,6 +9,8 @@ public class Parser
     private Lexer lexer;
     private Token currToken;
     public int line;
+
+    private errorHandler errorhandler = new errorHandler();
 
     public  Parser(Lexer l)
     {
@@ -47,12 +49,11 @@ public class Parser
             ASTNode temp = parseStatement();
             if(temp == null)
             {
-                System.out.println("Error while parsing in line : " + line);
-                return null;
+                errorhandler.add("Error while parsing" , line);
+                errorhandler.report();
             }
             Program.add(temp);
         }
-        System.out.println("Parsed successfully");
         return Program;
     }
 

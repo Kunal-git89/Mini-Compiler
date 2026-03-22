@@ -578,8 +578,7 @@ public class Lexer
             }
 
         }while(!Character.isWhitespace(c));
-        System.out.println("Lexical error in line");
-        return new Token(Token.Token_type.Error);
+        throw new RuntimeException("Lexical error in line");
     }
 
     public Lexer(String s)

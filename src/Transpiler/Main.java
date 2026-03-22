@@ -1,8 +1,6 @@
 package Transpiler;
 
-import Transpiler.Semantic.AST.*;
-
-import java.beans.Expression;
+import Transpiler.AST.*;
 import java.nio.file.*;
 import java.util.*;
 
