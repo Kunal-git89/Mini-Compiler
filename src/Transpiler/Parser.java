@@ -41,7 +41,6 @@ public class Parser
 
     public List<ASTNode> parse()
     {
-        if(currToken.type == Token.Token_type.Start) advance();
         while(!checkCurrToken(Token.Token_type.EOF))
         {
             ASTNode temp = parseStatement();

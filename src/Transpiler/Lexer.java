@@ -585,6 +585,6 @@ public class Lexer
     {
         program = s;
         c = getcurchar();
-        advance();
+        if(Character.isWhitespace(c)) advance();
     }
 }

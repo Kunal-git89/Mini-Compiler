@@ -31,7 +31,6 @@ public class Semantic_Analyzer
             case nodeType.LetNode :
             {
                 LetNode temp = (LetNode) node;
-                analyze(temp.expression);
                 String name = temp.name;
             }
             case nodeType.ExpressionNode :
@@ -39,5 +38,15 @@ public class Semantic_Analyzer
 
             }
         }
+    }
+
+    private void analyzeExpression(ExpressionNode node)
+    {
+
+    }
+
+    private void analyzeCondition(ExpressionNode node)
+    {
+
     }
 }
