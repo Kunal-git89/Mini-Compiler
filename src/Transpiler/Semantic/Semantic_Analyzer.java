@@ -19,13 +19,25 @@ public class Semantic_Analyzer
         symboltable.addScope(); //Global scope start
         for(ASTNode node : AST)
         {
-
+            analyze(node);
         }
         symboltable.existScope(); //Global scope end
     }
 
-    private void analyze() // Actual analysis
+    private void analyze(ASTNode node) // Actual analysis
     {
+        switch (node.type)
+        {
+            case nodeType.LetNode :
+            {
+                LetNode temp = (LetNode) node;
+                analyze(temp.expression);
+                String name = temp.name;
+            }
+            case nodeType.ExpressionNode :
+            {
 
+            }
+        }
     }
 }

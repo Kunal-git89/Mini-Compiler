@@ -309,12 +309,12 @@ public class Parser
             {
                 case Token.Token_type.Equals:
                 {
-                    curr.op = ExpressionNode.opType.Equals;
+                    curr.op = opType.Equals;
                     break;
                 }
                 case Token.Token_type.NotEquals:
                 {
-                    curr.op = ExpressionNode.opType.NotEquals;
+                    curr.op = opType.NotEquals;
                     break;
                 }
             }
@@ -339,22 +339,22 @@ public class Parser
             {
                 case Token.Token_type.Less :
                 {
-                    curr.op = ExpressionNode.opType.Less;
+                    curr.op = opType.Less;
                     break;
                 }
                 case Token.Token_type.LE :
                 {
-                    curr.op = ExpressionNode.opType.LE;
+                    curr.op = opType.LE;
                     break;
                 }
                 case Token.Token_type.Greater :
                 {
-                    curr.op = ExpressionNode.opType.Greater;
+                    curr.op = opType.Greater;
                     break;
                 }
                 case Token.Token_type.GE :
                 {
-                    curr.op = ExpressionNode.opType.GE;
+                    curr.op = opType.GE;
                     break;
                 }
             }
@@ -374,7 +374,7 @@ public class Parser
         if(consume(Token.Token_type.Dots))
         {
             ExpressionNode res = new ExpressionNode(line);
-            res.op = ExpressionNode.opType.Range;
+            res.op = opType.Range;
             res.rightNode = parseTerm();
             if(res.rightNode == null) return null;
             res.leftNode = left;
@@ -395,12 +395,12 @@ public class Parser
             {
                 case Token.Token_type.Add:
                 {
-                    curr.op = ExpressionNode.opType.Add;
+                    curr.op = opType.Add;
                     break;
                 }
                 case Token.Token_type.Minus:
                 {
-                    curr.op = ExpressionNode.opType.Minus;
+                    curr.op = opType.Minus;
                     break;
                 }
             }
@@ -425,17 +425,17 @@ public class Parser
             {
                 case Token.Token_type.Multiply :
                 {
-                    curr.op = ExpressionNode.opType.Multiply;
+                    curr.op = opType.Multiply;
                     break;
                 }
                 case Token.Token_type.Divide :
                 {
-                    curr.op = ExpressionNode.opType.Divide;
+                    curr.op = opType.Divide;
                     break;
                 }
                 case Token.Token_type.Mod :
                 {
-                    curr.op = ExpressionNode.opType.Mod;
+                    curr.op = opType.Mod;
                     break;
                 }
             }

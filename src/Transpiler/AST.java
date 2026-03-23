@@ -4,13 +4,19 @@ import java.util.*;
 
 public class AST
 {
+    public enum nodeType
+    {
+        BlockNode , LetNode , AssignmentNode , InputNode , PrintNode , IfNode , ElseIfNode , ElseNode , SwapNode , WhileNode , ContinueNode , BreakNode , ExpressionNode
+    }
+
+    public enum opType
+    {
+        Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range , Less , LE , Greater , GE, Equals , NotEquals,
+    }
+
     public static class ASTNode
     {
-        enum nodeType
-        {
-            BlockNode , LetNode , AssignmentNode , InputNode , PrintNode , IfNode , ElseIfNode , ElseNode , SwapNode , WhileNode , ContinueNode , BreakNode , ExpressionNode
-        }
-        nodeType type;
+        public nodeType type;
         public void printNode() {}
         public int line;
     }
@@ -258,10 +264,7 @@ public class AST
             type = nodeType.ExpressionNode;
             line = a;
         }
-        public enum opType
-        {
-            Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range , Less , LE , Greater , GE, Equals , NotEquals,
-        }
+
         public ExpressionNode leftNode;
         public opType op;
         public ExpressionNode rightNode;
