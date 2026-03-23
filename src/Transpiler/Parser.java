@@ -10,8 +10,6 @@ public class Parser
     private Token currToken;
     public int line;
 
-    private errorHandler errorhandler = new errorHandler();
-
     public  Parser(Lexer l)
     {
         lexer = l;
@@ -49,8 +47,7 @@ public class Parser
             ASTNode temp = parseStatement();
             if(temp == null)
             {
-                errorhandler.add("Error while parsing" , line);
-                errorhandler.report();
+                throw new RuntimeException("Error while parsing in line : " + line);
             }
             Program.add(temp);
         }
