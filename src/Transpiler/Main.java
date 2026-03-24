@@ -20,7 +20,7 @@ public class Main
         Semantic_Analyzer semantic = new Semantic_Analyzer(program);
         semantic.start();
 
-        //CodeGenerator CG = new CodeGenerator(program , "Output");
-        //CG.start();
+        CodeGenerator CG = new CodeGenerator(program , "Output");
+        CG.start();
     }
 }
