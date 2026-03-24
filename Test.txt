@@ -1,6 +1,6 @@
 
 
-let x = 5 + 10;
+let x = 0;
 let y = 10;
 let z = 1..10;
 {
@@ -9,7 +9,7 @@ input(x);
 print x;
 print(x == y);
 }
-swap x y;
+swap x z;
 
 if(x == 7)
     {

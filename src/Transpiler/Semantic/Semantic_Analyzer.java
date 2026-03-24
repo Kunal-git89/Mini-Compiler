@@ -6,7 +6,7 @@ import java.util.*;
 public class Semantic_Analyzer
 {
     private SymbolTable_Manager symboltable = new SymbolTable_Manager();
-    private List<ASTNode> AST = new ArrayList<>();
+    private List<ASTNode> AST;
     private int loopdepth = 0;
 
     public Semantic_Analyzer(List<ASTNode> l)
@@ -41,7 +41,7 @@ public class Semantic_Analyzer
             {
                 AssignmentNode temp = (AssignmentNode) node;
                 Symbol s = symboltable.lookup(temp.name);
-                if(s == null) throw new RuntimeException("Variable " + temp.name + " need to be declared in line : " + temp.line);
+                if(s == null) throw new RuntimeException("Variable " + temp.name + " need to be declared ,line : " + temp.line);
                 symbolType t = analyzeExpression(temp.expression);
                 if( t == symbolType.Bool) throw new RuntimeException("Expression expected in intialization , line : " + temp.line);
                 s.type = t;
@@ -73,9 +73,9 @@ public class Semantic_Analyzer
             {
                 SwapNode temp = (SwapNode) node;
                 Symbol s = symboltable.lookup(temp.left);
-                if(s == null) throw new RuntimeException("Variable " + temp.left + " need to be declared in line : " + temp.line);
+                if(s == null) throw new RuntimeException("Variable " + temp.left + " need to be declared ,line : " + temp.line);
                 s = symboltable.lookup(temp.right);
-                if(s==null) throw new RuntimeException("Variable " + temp.right + " need to be declared in line : " + temp.line);
+                if(s==null) throw new RuntimeException("Variable " + temp.right + " need to be declared ,line : " + temp.line);
                 return;
             }
             case WhileNode:
