@@ -142,6 +142,11 @@ public class Parser
                 return res;
             }
 
+            case Token.Token_type.LBrac:
+            {
+                return parseBlock();
+            }
+
             default : return null;
         }
     }
@@ -156,7 +161,7 @@ public class Parser
             if (temp == null) return null;
             res.codeSnippet.add(temp);
         }
-        if(!consume(Token.Token_type.RBrac)) return null;
+        if(!consume(Token.Token_type.RBrac)) throw new RuntimeException("Block isn't correctly used , line : " + res.line);
         return res;
     }
 
@@ -291,39 +296,9 @@ public class Parser
 
     private ExpressionNode parseExpression()
     {
-        ExpressionNode temp = parseEquality();
+        ExpressionNode temp = parseComparision();
         if (temp == null) return null;
         return temp;
-    }
-
-    private ExpressionNode parseEquality()
-    {
-        ExpressionNode res = parseComparision();
-        if(res == null) return null;
-
-        while (checkCurrToken(Token.Token_type.Equals) || checkCurrToken(Token.Token_type.NotEquals))
-        {
-            ExpressionNode curr = new ExpressionNode(line);
-            switch(currToken.type)
-            {
-                case Token.Token_type.Equals:
-                {
-                    curr.op = opType.Equals;
-                    break;
-                }
-                case Token.Token_type.NotEquals:
-                {
-                    curr.op = opType.NotEquals;
-                    break;
-                }
-            }
-            advance();
-            curr.rightNode = parseComparision();
-            if(curr.rightNode == null) return null;
-            curr.leftNode = res;
-            res = curr;
-        }
-        return res;
     }
 
     private ExpressionNode parseComparision()
@@ -331,7 +306,7 @@ public class Parser
         ExpressionNode res = parseRangeExp();
         if(res == null) return null;
 
-        while(checkCurrToken(Token.Token_type.Less) || checkCurrToken(Token.Token_type.LE) || checkCurrToken(Token.Token_type.Greater) || checkCurrToken(Token.Token_type.GE))
+        while(checkCurrToken(Token.Token_type.Less) || checkCurrToken(Token.Token_type.LE) || checkCurrToken(Token.Token_type.Greater) || checkCurrToken(Token.Token_type.GE) || checkCurrToken(Token.Token_type.Equals) || checkCurrToken(Token.Token_type.NotEquals))
         {
             ExpressionNode curr = new ExpressionNode(line);
             switch(currToken.type)
@@ -354,6 +329,16 @@ public class Parser
                 case Token.Token_type.GE :
                 {
                     curr.op = opType.GE;
+                    break;
+                }
+                case Token.Token_type.Equals:
+                {
+                    curr.op = opType.Equals;
+                    break;
+                }
+                case Token.Token_type.NotEquals:
+                {
+                    curr.op = opType.NotEquals;
                     break;
                 }
             }

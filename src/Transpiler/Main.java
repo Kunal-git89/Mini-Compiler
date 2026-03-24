@@ -1,6 +1,8 @@
 package Transpiler;
 
 import Transpiler.AST.*;
+import Transpiler.Semantic.Semantic_Analyzer;
+
 import java.nio.file.*;
 import java.util.*;
 
@@ -15,9 +17,13 @@ public class Main
         Parser parser = new Parser(lexer);
         List<ASTNode> program = parser.parse();
 
+        Semantic_Analyzer semantic = new Semantic_Analyzer(program);
+        semantic.start();
+
         for(ASTNode node : program)
         {
-            node.printNode();
+            //node.printNode();
+            System.out.println(node.getClass().getSimpleName());
         }
     }
 }

@@ -1,12 +1,14 @@
-let x = 5;
-let y = 10;
-let r = 1..10;
 
+
+let x = 5 + 10;
+let y = 10;
+let z = 1..10;
+{
 input(x);
 
 print x;
-print(x + y);
-
+print(x == y);
+}
 swap x y;
 
 if(x == 7)
@@ -31,7 +33,12 @@ while(x < y)
 {
     print x;
     x = x + 1;
-
+    while(x >= 1)
+    {
+        let x = 0.. 10;
+        print x;
+        break;
+    }
     if(x == 7)
     {
         print 100;
@@ -48,8 +55,8 @@ while(x < y)
     else
     {
         print 300;
+        continue;
+        break;
     }
 }
 
-continue;
-break;

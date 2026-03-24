@@ -82,7 +82,7 @@ public class AST
         @Override
         public void printNode()
         {
-            System.out.print("Assign " + name);
+            System.out.print("Assign " + name + " ");
             expression.printNode();
         }
     }
@@ -140,13 +140,13 @@ public class AST
             System.out.print("If condition ");
             condition.printNode();
             block.printNode();
-
+            if(elseifPart != null)
             for(ElseifNode node : elseifPart)
             {
                 node.printNode();
             }
 
-            elsePart.printNode();
+            if(elsePart != null) elsePart.printNode();
         }
     }
 
@@ -271,8 +271,9 @@ public class AST
         @Override
         public void printNode()
         {
+            System.out.print("Operator : " + op + " , left : ");
             leftNode.printNode();
-            System.out.print(op + " ");
+            System.out.print(" ,right : ");
             rightNode.printNode();
         }
     }
@@ -290,7 +291,7 @@ public class AST
         @Override
         public void printNode()
         {
-            System.out.println("Identifier : " + name);
+            System.out.print("Identifier : " + name + " ");
         }
     }
 
@@ -307,7 +308,7 @@ public class AST
         @Override
         public void printNode()
         {
-            System.out.println("Constant : " + value);
+            System.out.print("Constant : " + value + " ");
         }
     }
 }

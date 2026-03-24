@@ -1,11 +1,11 @@
 package Transpiler.Semantic;
 
-import Transpiler.Semantic.SymbolTable_Entry.*;
+import Transpiler.Semantic.Symbol;
 import java.util.*;
 
 public class SymbolTable_Manager
 {
-    private Stack<HashMap<String , symbol>> stack = new Stack<>();
+    private Stack<HashMap<String , Symbol>> stack = new Stack<>();
 
     public void addScope()
     {
@@ -17,14 +17,15 @@ public class SymbolTable_Manager
         stack.pop();
     }
 
-    public void declare(symbol s)
+    public boolean declare(Symbol s)
     {
-        HashMap<String , symbol> map = stack.peek();
-        if(map.containsKey(s.name)) throw new RuntimeException("Duplicate variable declaration ");
+        HashMap<String , Symbol> map = stack.peek();
+        if(map.containsKey(s.name)) return false;
         map.put(s.name , s);
+        return true;
     }
 
-    public symbol lookup(String name)
+    public Symbol lookup(String name)
     {
         for(int i = stack.size()- 1 ; i >= 0 ; i--)
         {
