@@ -25,7 +25,7 @@ public class CodeGenerator
         emit("public static void main (String[] args) { ");
 
         // my code
-        //emit("System.out.println(\"Hello Wrold\");");
+        
         emit("}");
         indent--;
         emit("}");
