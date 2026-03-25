@@ -9,13 +9,11 @@ public class CodeGenerator
     private List<ASTNode> program ;
     private String filename;
     private List<String> code = new ArrayList<>();
-    public File file;
     public int indent = 0;
     public CodeGenerator(List<ASTNode> l , String s)
     {
         program = l;
         filename = s;
-        file = new File(filename + ".java");
     }
 
     public void start()
@@ -27,7 +25,7 @@ public class CodeGenerator
         emit("public static void main (String[] args) { ");
 
         // my code
-
+        //emit("System.out.println(\"Hello Wrold\");");
         emit("}");
         indent--;
         emit("}");
@@ -40,7 +38,7 @@ public class CodeGenerator
     {
         try
         {
-            FileWriter writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(filename + ".java");
             for(String line : code)
             {
                 writer.write(line);
@@ -58,11 +56,15 @@ public class CodeGenerator
     {
         try
         {
-            System.out.println(System.getenv("PATH"));
-            ProcessBuilder pb = new ProcessBuilder("java" , "-version");
+            ProcessBuilder pb = new ProcessBuilder( "javac" , filename + ".java");
             pb.inheritIO();
             Process compile = pb.start(); //Compile the code
             compile.waitFor();
+
+            pb = new ProcessBuilder("java" , filename);
+            pb.inheritIO();
+            Process run = pb.start();
+            run.waitFor();
         }
         catch (Exception e)
         {
