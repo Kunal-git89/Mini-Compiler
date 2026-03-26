@@ -1,9 +1,13 @@
 package Transpiler.CodeGeneration;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.*;
 import java.nio.file.*;
-import java.sql.SQLOutput;
 import java.util.*;
 import Transpiler.AST.*;
+
+import javax.tools.*;
 import java.io.*;
 
 public class CodeGenerator
@@ -81,19 +85,19 @@ public class CodeGenerator
 
     private void compileAndRun()
     {
-        try
-        {
-            ProcessBuilder pb = new ProcessBuilder( "javac" , filename + ".java");
-            pb.inheritIO();
-            Process compile = pb.start(); //Compile the code
-            compile.waitFor();
+        try {
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            int c = compiler.run(null, null, null, "-d", "output", file.getName());
+            if(c != 0) throw new RuntimeException("Compilation of generated code failed");
+            File dir = new File("output");
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{dir.toURI().toURL()});
+            Class<?> cls = Class.forName(filename, true, classLoader);
 
-            pb = new ProcessBuilder("java" , filename);
-            pb.inheritIO();
-            Process run = pb.start();
-            run.waitFor();
+            Method main = cls.getMethod("main", String[].class);
+
+            main.invoke(null, (Object) new String[]{});
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             e.printStackTrace();
         }
