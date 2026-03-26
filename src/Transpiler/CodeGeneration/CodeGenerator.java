@@ -88,7 +88,7 @@ public class CodeGenerator
         try {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             int c = compiler.run(null, null, null, "-d", "output", file.getName());
-            if(c != 0) throw new RuntimeException("Compilation of generated code failed");
+            if(c != 0) throw new RuntimeException("Compilation of generated code failed , install JVM 21(recommended)");
             File dir = new File("output");
             URLClassLoader classLoader = new URLClassLoader(new URL[]{dir.toURI().toURL()});
             Class<?> cls = Class.forName(filename, true, classLoader);
@@ -99,7 +99,7 @@ public class CodeGenerator
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            e.getCause().printStackTrace();
         }
     }
 
