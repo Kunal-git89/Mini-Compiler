@@ -1,6 +1,4 @@
-import java.util.*;
-
-
+package Transpiler.CodeGeneration;
 
 class Range
 {
@@ -23,13 +21,4 @@ class Range
     {
         return limit;
     }
-}
-
-
-
-public class Output {
-	public static void main (String[] args) { 
-		Range r = new Range(1 , 10);
-		System.out.println("Hello World");
-	}
 }
