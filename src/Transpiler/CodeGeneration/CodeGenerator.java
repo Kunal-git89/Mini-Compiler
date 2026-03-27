@@ -1,6 +1,5 @@
 package Transpiler.CodeGeneration;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.file.*;
@@ -64,23 +63,23 @@ public class CodeGenerator
 
     private void emitLet(LetNode node)
     {
+            String line = "Variable " + node.name + " = new Variable(";
             if(node.expression.op == opType.Range)
             {
-                String line = "Range " + node.name + " = new Range(" + emitArithematic(node.expression.leftNode) + "," + emitArithematic(node.expression.rightNode) + ");";
-                emit(line);
+                line = line.concat(emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
             }
             else
             {
-                String line = "int " + node.name + " = " + emitArithematic(node.expression) + ";";
-                emit(line);
+                line = line.concat(emitArithematic(node.expression) + ");");
             }
+            emit(line);
     }
 
     private String emitArithematic(ExpressionNode node)
     {
         if(node.op == opType.Identifier)
         {
-            return ((IdentifierNode)node).name;
+            return ((IdentifierNode)node).name + ".getInt()";
         }
         else if (node.op == opType.Constant)
         {

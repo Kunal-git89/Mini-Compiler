@@ -1,6 +1,4 @@
-import java.util.*;
-
-
+package Transpiler.CodeGeneration;
 
 class Variable
 {
@@ -44,12 +42,3 @@ class Variable
     }
 }
 enum variableType {Int , Range}
-
-
-public class Output {
-	public static void main (String[] args) { 
-		Variable x = new Variable(0);
-		Variable y = new Variable(10);
-		Variable z = new Variable(1 , 10);
-	}
-}
