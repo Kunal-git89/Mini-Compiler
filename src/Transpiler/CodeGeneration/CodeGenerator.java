@@ -89,26 +89,26 @@ public class CodeGenerator
         switch(node.op)
         {
             case opType.Add:
-                str.concat(" + ");
+                str = str.concat(" + ");
                 break;
 
             case opType.Minus:
-                str.concat(" - ");
+                str = str.concat(" - ");
                 break;
 
             case opType.Multiply:
-                str.concat(" * ");
+                str = str.concat(" * ");
                 break;
 
             case opType.Divide:
-                str.concat(" / ");
+                str = str.concat(" / ");
                 break;
 
             case opType.Mod:
-                str.concat(" % ");
+                str = str.concat(" % ");
                 break;
         }
-        str.concat(emitArithematic(node.rightNode));
+        str = str.concat(emitArithematic(node.rightNode));
         return str;
     }
 

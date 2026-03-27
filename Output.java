@@ -49,7 +49,7 @@ enum variableType {Int , Range}
 public class Output {
 	public static void main (String[] args) { 
 		Variable x = new Variable(0);
-		Variable y = new Variable(10);
+		Variable y = new Variable(10 + x.getInt());
 		Variable z = new Variable(1 , 10);
 	}
 }
