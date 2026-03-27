@@ -11,7 +11,7 @@ public class AST
 
     public enum opType
     {
-        Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Range , Less , LE , Greater , GE, Equals , NotEquals,
+        Identifier , Constant , Add , Minus , Multiply , Divide , Mod , Less , LE , Greater , GE, Equals , NotEquals , Range
     }
 
     public static class ASTNode
@@ -304,7 +304,7 @@ public class AST
             value = v;
             line =a;
         }
-        int value;
+        public int value;
         @Override
         public void printNode()
         {

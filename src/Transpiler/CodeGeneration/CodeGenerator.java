@@ -41,8 +41,15 @@ public class CodeGenerator
 
 
         //My code starts here
-        emit("Range r = new Range(1 , 10);");
-        emit("System.out.println(\"Hello World\");");
+        for(ASTNode node : program)
+        {
+            switch (node.type)
+            {
+                case nodeType.LetNode :
+                    emitLet((LetNode)node);
+                    break;
+            }
+        }
         //My code ends here
 
 
@@ -53,6 +60,116 @@ public class CodeGenerator
         outputCode();
         writer.close();
         compileAndRun();
+    }
+
+    private void emitLet(LetNode node)
+    {
+            if(node.expression.op == opType.Range)
+            {
+                String line = "Range " + node.name + " = new Range(" + emitArithematic(node.expression.leftNode) + "," + emitArithematic(node.expression.rightNode) + ");";
+                emit(line);
+            }
+            else
+            {
+                String line = "int " + node.name + " = " + emitArithematic(node.expression) + ";";
+                emit(line);
+            }
+    }
+
+    private String emitArithematic(ExpressionNode node)
+    {
+        if(node.op == opType.Identifier)
+        {
+            return ((IdentifierNode)node).name;
+        }
+        else if (node.op == opType.Constant)
+        {
+            return String.valueOf(((ConstantNode)node).value);
+        }
+        String str = emitArithematic(node.leftNode);
+        switch(node.op)
+        {
+            case opType.Add:
+                str.concat(" + ");
+                break;
+
+            case opType.Minus:
+                str.concat(" - ");
+                break;
+
+            case opType.Multiply:
+                str.concat(" * ");
+                break;
+
+            case opType.Divide:
+                str.concat(" / ");
+                break;
+
+            case opType.Mod:
+                str.concat(" % ");
+                break;
+        }
+        str.concat(emitArithematic(node.rightNode));
+        return str;
+    }
+
+    private void emitComaprator(ExpressionNode node)
+    {
+        if(node.op == opType.Identifier)
+        {
+            emit(((IdentifierNode)node).name);
+            return;
+        }
+        else if (node.op == opType.Constant)
+        {
+            emit(String.valueOf(((ConstantNode)node).value));
+            return;
+        }
+
+        emitRange(node.leftNode);
+        switch(node.op)
+        {
+            case opType.Less:
+                emit(" < ");
+                break;
+
+            case opType.LE:
+                emit(" <= ");
+                break;
+
+            case opType.Greater:
+                emit(" > ");
+                break;
+
+            case opType.GE:
+                emit(" >= ");
+                break;
+
+            case opType.Equals:
+                emit(" == ");
+                break;
+
+            case opType.NotEquals:
+                emit(" != ");
+                break;
+        }
+        emitRange(node.rightNode);
+    }
+
+    private void emitRange(ExpressionNode node)
+    {
+        if(node.op == opType.Identifier)
+        {
+            emit(((IdentifierNode)node).name);
+            return;
+        }
+        else if (node.op == opType.Constant)
+        {
+            emit(String.valueOf(((ConstantNode)node).value));
+            return;
+        }
+
+        if(node.op != opType.Range) emitArithematic(node);
     }
 
     private void writeclasses() throws IOException

@@ -29,7 +29,8 @@ class Range
 
 public class Output {
 	public static void main (String[] args) { 
-		Range r = new Range(1 , 10);
-		System.out.println("Hello World");
+		int x = 0;
+		int y = 10;
+		Range z = new Range(1,10);
 	}
 }
