@@ -2,13 +2,13 @@ package Transpiler.CodeGeneration;
 
 class Operation
 {
-    public Variable Range(Variable a , Variable b)
+    static public Variable Range(int a , int b)
     {
-        if(a.isInt() && b.isInt()) return new Variable(new int[] {a.getInt() , b.getInt()});
+        if(a <= b) return new Variable(new int[] {a , b});
         return null;
     }
 
-    public Variable Add(Variable a , Variable b)
+    static public Variable Add(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -67,7 +67,7 @@ class Operation
         return null;
     }
 
-    public Variable Minus(Variable a , Variable b)
+    static public Variable Minus(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -135,25 +135,25 @@ class Operation
         return null;
     }
 
-    public Variable Multiply(Variable a , Variable b)
+    static public Variable Multiply(Variable a , Variable b)
     {
         if(a.isInt() && b.isInt()) return new Variable(a.getInt() * b.getInt());
         return null;
     }
 
-    public Variable Divide(Variable a , Variable b)
+    static public Variable Divide(Variable a , Variable b)
     {
         if(a.isInt() && b.isInt()) return new Variable(a.getInt() / b.getInt());
         return null;
     }
 
-    public Variable Mod(Variable a , Variable b)
+    static public Variable Mod(Variable a , Variable b)
     {
         if(a.isInt() && b.isInt()) return new Variable(a.getInt() % b.getInt());
         return null;
     }
 
-    public Variable Less(Variable a , Variable b)
+    static public Variable Less(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -189,7 +189,7 @@ class Operation
         return null;
     }
 
-    public Variable LE(Variable a , Variable b)
+    static public Variable LE(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -225,7 +225,7 @@ class Operation
         return null;
     }
 
-    public Variable Greater(Variable a , Variable b)
+    static public Variable Greater(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -261,7 +261,7 @@ class Operation
         return null;
     }
 
-    public Variable GE(Variable a , Variable b)
+    static public Variable GE(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -297,7 +297,7 @@ class Operation
         return null;
     }
 
-    public Variable Equals(Variable a , Variable b)
+    static public Variable Equals(Variable a , Variable b)
     {
         switch(a.type)
         {
@@ -336,7 +336,7 @@ class Operation
         return null;
     }
 
-    public Variable NotEquals(Variable a , Variable b)
+    static public Variable NotEquals(Variable a , Variable b)
     {
         switch(a.type)
         {

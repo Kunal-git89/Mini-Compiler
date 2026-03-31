@@ -69,15 +69,15 @@ public class CodeGenerator
 
     private void emitLet(LetNode node)
     {
-            String line = "Variable " + node.name + " = new Variable(";
+            String line = "Variable " + node.name + " = ";
             if(getOpType(node.expression) == symbolType.Range)
             {
-                line = line.concat("new int[] {" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + "} );");
+                line = line.concat("Operation.gRange(" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
                 symbolTable.declare(new Symbol(node.name , symbolType.Range));
             }
             else
             {
-                line = line.concat(emitArithematic(node.expression) + ");");
+                line = line.concat("new Variable(" + emitArithematic(node.expression) + ");");
                 symbolTable.declare(new Symbol(node.name , symbolType.Int));
             }
             emit(line);
