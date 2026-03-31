@@ -5,6 +5,7 @@ import java.net.*;
 import java.nio.file.*;
 import java.util.*;
 import Transpiler.AST.*;
+import Transpiler.Semantic.*;
 
 import javax.tools.*;
 import java.io.*;
@@ -16,6 +17,7 @@ public class CodeGenerator
     private List<String> code = new ArrayList<>();
     private FileWriter writer;
     private String[] classes;
+    private SymbolTable_Manager symbolTable;
     public File file;
     public int indent = 0;
 
@@ -25,6 +27,7 @@ public class CodeGenerator
         filename = s;
         file = f;
         classes = c;
+        symbolTable = new SymbolTable_Manager();
     }
 
     public void start() throws IOException
@@ -37,7 +40,7 @@ public class CodeGenerator
         indent++;
         emit("public static void main (String[] args) { ");
         indent++;
-
+        symbolTable.addScope();
 
         //My code starts here
         for(ASTNode node : program)
@@ -47,11 +50,14 @@ public class CodeGenerator
                 case nodeType.LetNode :
                     emitLet((LetNode)node);
                     break;
+
+                case nodeType.AssignmentNode:
+
             }
         }
         //My code ends here
 
-
+        symbolTable.existScope();
         indent--;
         emit("}");
         indent--;
@@ -64,22 +70,46 @@ public class CodeGenerator
     private void emitLet(LetNode node)
     {
             String line = "Variable " + node.name + " = new Variable(";
-            if(node.expression.op == opType.Range)
+            if(getOpType(node.expression) == symbolType.Range)
             {
-                line = line.concat(emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
+                line = line.concat("new int[] {" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + "} );");
+                symbolTable.declare(new Symbol(node.name , symbolType.Range));
             }
             else
             {
                 line = line.concat(emitArithematic(node.expression) + ");");
+                symbolTable.declare(new Symbol(node.name , symbolType.Int));
             }
             emit(line);
+    }
+
+    private void emitAssignment (AssignmentNode node)
+    {
+        Symbol s = symbolTable.lookup(node.name);
+        String line = node.name;
+        switch(getOpType(node.expression))
+        {
+            case symbolType.Int:
+                line = line.concat("assignInt(");
+                break;
+
+            case symbolType.Range:
+                line = line.concat("assignRange(");
+                break;
+
+            case symbolType.Bool:
+                line = line.concat("assignBool(");
+                break;
+        }
     }
 
     private String emitArithematic(ExpressionNode node)
     {
         if(node.op == opType.Identifier)
         {
-            return ((IdentifierNode)node).name + ".getInt()";
+            Symbol s = symbolTable.lookup(((IdentifierNode)node).name);
+            if(s.type == symbolType.Int) return ((IdentifierNode)node).name + ".getInt()";
+            else return ((IdentifierNode)node).name + ".getRange()";
         }
         else if (node.op == opType.Constant)
         {
@@ -155,20 +185,17 @@ public class CodeGenerator
         emitRange(node.rightNode);
     }
 
-    private void emitRange(ExpressionNode node)
+    private String emitRange(ExpressionNode node)
     {
-        if(node.op == opType.Identifier)
-        {
-            emit(((IdentifierNode)node).name);
-            return;
-        }
-        else if (node.op == opType.Constant)
-        {
-            emit(String.valueOf(((ConstantNode)node).value));
-            return;
-        }
+        return null;
+    }
 
-        if(node.op != opType.Range) emitArithematic(node);
+    private symbolType getOpType(ExpressionNode node)
+    {
+        if(node.op == opType.Equals || node.op == opType.NotEquals || node.op == opType.Less || node.op == opType.LE || node.op == opType.Greater || node.op == opType.GE)
+            return symbolType.Bool;
+        else if (node.op == opType.Range) return symbolType.Range;
+        else return symbolType.Int;
     }
 
     private void writeclasses() throws IOException

@@ -12,7 +12,3 @@ public class Symbol
     }
 }
 
-enum symbolType
-{
-    Int , Bool , Range
-}

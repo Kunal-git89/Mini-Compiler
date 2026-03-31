@@ -15,7 +15,7 @@ public class Main
         String s = Files.readString(Path.of("Test.txt")); // Hardcode the file
         String filename = "Output";
         File file = new File(filename + ".java");
-        String[] includedClasses = {"src/Transpiler/CodeGeneration/Variable.java"};
+        String[] includedClasses = {"src/Transpiler/CodeGeneration/Variable.java" , "src/Transpiler/CodeGeneration/Operation.java"};
         Lexer lexer = new Lexer(s);
 
         Parser parser = new Parser(lexer);
