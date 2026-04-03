@@ -41,6 +41,7 @@ public class CodeGenerator
         emit("public static void main (String[] args) { ");
         indent++;
         symbolTable.addScope();
+        emit("Scanner sc = new Scanner(System.in);");
 
         //My code starts here
         for(ASTNode node : program)
@@ -53,6 +54,18 @@ public class CodeGenerator
 
                 case nodeType.AssignmentNode:
                     emitAssignment((AssignmentNode) node);
+                    break;
+
+                case nodeType.SwapNode:
+                    emitSwap((SwapNode) node);
+                    break;
+
+                case nodeType.InputNode:
+                    emitInput((InputNode) node);
+                    break;
+
+                case nodeType.PrintNode:
+                    emitPrint((PrintNode) node);
                     break;
             }
         }
@@ -108,6 +121,34 @@ public class CodeGenerator
                 break;
         }
         emit(line);
+    }
+
+    private void emitSwap(SwapNode node)
+    {
+        emit("Operation.Swap(" + node.left + " , " + node.right + ");");
+    }
+
+    private void emitInput(InputNode node)
+    {
+        emit(node.name + " = new Variable( sc.nextInt());");
+    }
+
+    private void emitPrint(PrintNode node)
+    {
+        switch(getOpType(node.expression))
+        {
+            case symbolType.Int:
+                emit(emitArithematic(node.expression) + ".printVariable();");
+                break;
+
+            case symbolType.Range:
+                emit("Operation.Range(" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ").printVariable();");
+                break;
+
+            case symbolType.Bool:
+                emit(emitComaprator(node.expression) + ".printVariable();");
+                break;
+        }
     }
 
     private String emitArithematic(ExpressionNode node)

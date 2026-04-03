@@ -5,8 +5,8 @@ import java.util.*;
 class Variable
 {
     private int[] limit;
+    private Boolean b;
     public variableType type;
-    public Boolean b;
     public Variable(int[] l)
     {
         type = variableType.Range;
@@ -53,7 +53,21 @@ class Variable
     public void assignBool(boolean a ) {b = a;}
     public boolean getBool() {return b;}
 
-
+    public void printVariable()
+    {
+        switch (type)
+        {
+            case variableType.Int:
+                System.out.println(limit[0]);
+                break;
+            case variableType.Range:
+                System.out.println(limit[0] + ".." + limit[1]);
+                break;
+            case variableType.Bool :
+                System.out.println(b);
+                break;
+        }
+    }
 }
 enum variableType {Int , Range , Bool}
 
@@ -67,6 +81,13 @@ class Operation
         if(!(a.isInt() && b.isInt())) return null;
         if(a.getInt() <= b.getInt()) return new Variable(new int[] {a.getInt() , b.getInt()});
         return null;
+    }
+
+    static public void Swap(Variable a , Variable b)
+    {
+        Variable temp = a;
+        a = b;
+        b = temp;
     }
 
     static public Variable Add(Variable a , Variable b)
@@ -440,10 +461,15 @@ class Operation
 
 public class Output {
 	public static void main (String[] args) { 
+		Scanner sc = new Scanner(System.in);
 		Variable x = new Variable(0);
 		Variable y = Operation.Add(new Variable(10) , x);
 		Variable z = Operation.Range(Operation.Add(x , new Variable(1)) , Operation.Add(new Variable(10) , y));
 		Variable a = z;
 		x = Operation.Range(x , Operation.Add(y , Operation.Minus(z , new Variable(1))));
+		Operation.Swap(x , z);
+		y = new Variable( sc.nextInt());
+		z = Operation.Range(y , Operation.Add(y , new Variable(10)));
+		Operation.Minus(z , new Variable(5)).printVariable();
 	}
 }

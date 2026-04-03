@@ -3,8 +3,8 @@ package Transpiler.CodeGeneration;
 class Variable
 {
     private int[] limit;
+    private Boolean b;
     public variableType type;
-    public Boolean b;
     public Variable(int[] l)
     {
         type = variableType.Range;
@@ -51,6 +51,20 @@ class Variable
     public void assignBool(boolean a ) {b = a;}
     public boolean getBool() {return b;}
 
-
+    public void printVariable()
+    {
+        switch (type)
+        {
+            case variableType.Int:
+                System.out.println(limit[0]);
+                break;
+            case variableType.Range:
+                System.out.println(limit[0] + ".." + limit[1]);
+                break;
+            case variableType.Bool :
+                System.out.println(b);
+                break;
+        }
+    }
 }
 enum variableType {Int , Range , Bool}

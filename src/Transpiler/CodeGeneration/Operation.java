@@ -9,6 +9,13 @@ class Operation
         return null;
     }
 
+    static public void Swap(Variable a , Variable b)
+    {
+        Variable temp = a;
+        a = b;
+        b = temp;
+    }
+
     static public Variable Add(Variable a , Variable b)
     {
         switch(a.type)
