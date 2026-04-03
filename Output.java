@@ -62,9 +62,10 @@ enum variableType {Int , Range , Bool}
 
 class Operation
 {
-    static public Variable Range(int a , int b)
+    static public Variable Range(Variable a , Variable b)
     {
-        if(a <= b) return new Variable(new int[] {a , b});
+        if(!(a.isInt() && b.isInt())) return null;
+        if(a.getInt() <= b.getInt()) return new Variable(new int[] {a.getInt() , b.getInt()});
         return null;
     }
 
@@ -440,8 +441,9 @@ class Operation
 public class Output {
 	public static void main (String[] args) { 
 		Variable x = new Variable(0);
-		Variable y = new Variable(10 + x.getInt());
-		Variable z = Operation.Range(x.getInt() + 1 , 10 + y.getInt());
-		Variable a = new Variable(z.getRange());
+		Variable y = Operation.Add(new Variable(10) , x);
+		Variable z = Operation.Range(Operation.Add(x , new Variable(1)) , Operation.Add(new Variable(10) , y));
+		Variable a = z;
+		x = Operation.Range(x , Operation.Add(y , Operation.Minus(z , new Variable(1))));
 	}
 }

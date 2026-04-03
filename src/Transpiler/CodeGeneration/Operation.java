@@ -2,9 +2,10 @@ package Transpiler.CodeGeneration;
 
 class Operation
 {
-    static public Variable Range(int a , int b)
+    static public Variable Range(Variable a , Variable b)
     {
-        if(a <= b) return new Variable(new int[] {a , b});
+        if(!(a.isInt() && b.isInt())) return null;
+        if(a.getInt() <= b.getInt()) return new Variable(new int[] {a.getInt() , b.getInt()});
         return null;
     }
 

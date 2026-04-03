@@ -52,7 +52,8 @@ public class CodeGenerator
                     break;
 
                 case nodeType.AssignmentNode:
-
+                    emitAssignment((AssignmentNode) node);
+                    break;
             }
         }
         //My code ends here
@@ -72,12 +73,17 @@ public class CodeGenerator
             String line = "Variable " + node.name + " = ";
             if(getOpType(node.expression) == symbolType.Range)
             {
-                line = line.concat("Operation.gRange(" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
+                line = line.concat("Operation.Range(" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
                 symbolTable.declare(new Symbol(node.name , symbolType.Range));
+            }
+            else if (getOpType(node.expression) == symbolType.Bool)
+            {
+                line = line.concat(emitComaprator(node.expression) + ";");
+                symbolTable.declare(new Symbol(node.name , symbolType.Bool));
             }
             else
             {
-                line = line.concat("new Variable(" + emitArithematic(node.expression) + ");");
+                line = line.concat(emitArithematic(node.expression) + ";");
                 symbolTable.declare(new Symbol(node.name , symbolType.Int));
             }
             emit(line);
@@ -86,21 +92,22 @@ public class CodeGenerator
     private void emitAssignment (AssignmentNode node)
     {
         Symbol s = symbolTable.lookup(node.name);
-        String line = node.name;
+        String line = node.name + " = ";
         switch(getOpType(node.expression))
         {
             case symbolType.Int:
-                line = line.concat("assignInt(");
+                line = line.concat(emitArithematic(node.expression) + ";");
                 break;
 
             case symbolType.Range:
-                line = line.concat("assignRange(");
+                line = line.concat("Operation.Range(" + emitArithematic(node.expression.leftNode) + " , " + emitArithematic(node.expression.rightNode) + ");");
                 break;
 
             case symbolType.Bool:
-                line = line.concat("assignBool(");
+                line = line.concat(emitComaprator(node.expression) + ";");
                 break;
         }
+        emit(line);
     }
 
     private String emitArithematic(ExpressionNode node)
@@ -108,85 +115,72 @@ public class CodeGenerator
         if(node.op == opType.Identifier)
         {
             Symbol s = symbolTable.lookup(((IdentifierNode)node).name);
-            if(s.type == symbolType.Int) return ((IdentifierNode)node).name + ".getInt()";
-            else return ((IdentifierNode)node).name + ".getRange()";
+            if(s.type == symbolType.Int) return ((IdentifierNode)node).name;
+            else if (s.type == symbolType.Range) return ((IdentifierNode)node).name;
+            else return ((IdentifierNode)node).name;
         }
         else if (node.op == opType.Constant)
         {
-            return String.valueOf(((ConstantNode)node).value);
+            return "new Variable(" + String.valueOf(((ConstantNode)node).value) + ")";
         }
-        String str = emitArithematic(node.leftNode);
+        String left = emitArithematic(node.leftNode);
+        String right = emitArithematic(node.rightNode);
         switch(node.op)
         {
             case opType.Add:
-                str = str.concat(" + ");
-                break;
+                return "Operation.Add("+left + " , " + right + ")";
 
             case opType.Minus:
-                str = str.concat(" - ");
-                break;
+                return "Operation.Minus("+left + " , " + right + ")";
 
             case opType.Multiply:
-                str = str.concat(" * ");
-                break;
+                return "Operation.Multiply("+left + " , " + right + ")";
 
             case opType.Divide:
-                str = str.concat(" / ");
-                break;
+                return "Operation.Divide("+left + " , " + right + ")";
 
             case opType.Mod:
-                str = str.concat(" % ");
-                break;
+                return "Operation.Mod("+left + " , " + right + ")";
         }
-        str = str.concat(emitArithematic(node.rightNode));
-        return str;
+        return null;
     }
 
-    private void emitComaprator(ExpressionNode node)
+    private String emitComaprator(ExpressionNode node)
     {
         if(node.op == opType.Identifier)
         {
-            emit(((IdentifierNode)node).name);
-            return;
+            Symbol s = symbolTable.lookup(((IdentifierNode)node).name);
+            if(s.type == symbolType.Int) return ((IdentifierNode)node).name;
+            else if (s.type == symbolType.Range) return ((IdentifierNode)node).name;
+            else return ((IdentifierNode)node).name;
         }
         else if (node.op == opType.Constant)
         {
-            emit(String.valueOf(((ConstantNode)node).value));
-            return;
+            return "new Variable(" + String.valueOf(((ConstantNode)node).value) + ")";
         }
 
-        emitRange(node.leftNode);
+        String left = emitArithematic(node.leftNode);
+        String right = emitArithematic(node.rightNode);
         switch(node.op)
         {
             case opType.Less:
-                emit(" < ");
-                break;
+                return "Operation.Less(" + left + " , " + right + ")";
 
             case opType.LE:
-                emit(" <= ");
-                break;
+                return "Operation.LE(" + left + " , " + right + ")";
 
             case opType.Greater:
-                emit(" > ");
-                break;
+                return "Operation.Greater(" + left + " , " + right + ")";
 
             case opType.GE:
-                emit(" >= ");
-                break;
+                return "Operation.GE(" + left + " , " + right + ")";
 
             case opType.Equals:
-                emit(" == ");
-                break;
+                return "Operation.Equals(" + left + " , " + right + ")";
 
             case opType.NotEquals:
-                emit(" != ");
-                break;
+                return "Operation.NotEquals(" + left + " , " + right + ")";
         }
-        emitRange(node.rightNode);
-    }
-
-    private String emitRange(ExpressionNode node)
-    {
         return null;
     }
 

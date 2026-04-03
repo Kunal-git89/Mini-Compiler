@@ -4,8 +4,8 @@ let x = 0;
 let y = 10 + x;
 let z = x + 1 .. 10 + y;
 let a = z;
+x = x .. y + (z - 1);
 swap x z;
-
 if(x == 7)
     {
         print 100;
