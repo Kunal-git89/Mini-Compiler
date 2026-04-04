@@ -65,8 +65,8 @@ public class Semantic_Analyzer
                 IfNode temp = (IfNode) node;
                 if(analyzeExpression(temp.condition) != symbolType.Bool) throw new RuntimeException("Condition exprected in if statement , line : " + temp.line);
                 analyzeBlock(temp.block);
-                for(ElseifNode n : temp.elseifPart) analyzeElseIfPart(n);
-                analyzeBlock(temp.elsePart.block);
+                if(temp.elseifPart != null) for(ElseifNode n : temp.elseifPart) analyzeElseIfPart(n);
+                if(temp.elsePart != null) analyzeBlock(temp.elsePart.block);
                 return;
             }
             case SwapNode :

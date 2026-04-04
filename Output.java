@@ -462,19 +462,12 @@ class Operation
 public class Output {
 	public static void main (String[] args) { 
 		Scanner sc = new Scanner(System.in);
-		Variable x = new Variable(0);
-		Variable y = Operation.Add(new Variable(10) , x);
-		Variable z = Operation.Range(Operation.Add(x , new Variable(1)) , Operation.Add(new Variable(10) , y));
-		Variable a = z;
-		x = Operation.Range(x , Operation.Add(y , Operation.Minus(z , new Variable(1))));
-		Operation.Swap(x , z);
-		y = new Variable( sc.nextInt());
-		z = Operation.Range(y , Operation.Add(y , new Variable(10)));
-		Operation.Minus(z , new Variable(5)).printVariable();
+		Variable a = new Variable(0);
+		a = new Variable( sc.nextInt());
+		while(Operation.LE(a , new Variable(100)).getBool())
 		{
-		x = new Variable( sc.nextInt());
-		x.printVariable();
-		Operation.Equals(x , y).printVariable();
+		a.printVariable();
+		a = Operation.Add(a , new Variable(1));
 		}
 	}
 }

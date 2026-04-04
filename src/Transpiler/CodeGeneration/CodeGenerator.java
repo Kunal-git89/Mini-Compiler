@@ -87,6 +87,22 @@ public class CodeGenerator
             case nodeType.BlockNode:
                 emitBlock((BlockNode) node);
                 break;
+
+            case nodeType.IfNode:
+                emitIf((IfNode) node);
+                break;
+
+            case nodeType.WhileNode:
+                emitWhile((WhileNode) node);
+                break;
+
+            case nodeType.ContinueNode:
+                emit("continue;");
+                break;
+
+            case nodeType.BreakNode:
+                emit("break;");
+                break;
         }
     }
 
@@ -170,6 +186,31 @@ public class CodeGenerator
                 emit(emitComaprator(node.expression) + ".printVariable();");
                 break;
         }
+    }
+
+    private void emitIf(IfNode node)
+    {
+        emit("if(" + emitComaprator(node.condition) + ".getBool())");
+        emitBlock(node.block);
+        if(node.elseifPart != null)
+        {
+            for(ElseifNode n : node.elseifPart)
+            {
+                emit("else if(" + emitComaprator(n.condition) + ".getBool())");
+                emitBlock(n.block);
+            }
+        }
+        if(node.elsePart != null)
+        {
+            emit("else");
+            emitBlock(node.elsePart.block);
+        }
+    }
+
+    private void emitWhile(WhileNode node)
+    {
+        emit("while(" + emitComaprator(node.condition) + ".getBool())");
+        emitBlock(node.block);
     }
 
     private String emitArithematic(ExpressionNode node)
