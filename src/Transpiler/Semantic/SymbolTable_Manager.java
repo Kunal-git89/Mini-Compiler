@@ -1,6 +1,5 @@
 package Transpiler.Semantic;
 
-import Transpiler.Semantic.Symbol;
 import java.util.*;
 
 public class SymbolTable_Manager
@@ -12,7 +11,7 @@ public class SymbolTable_Manager
         stack.push(new HashMap<>());
     }
 
-    public void existScope()
+    public void exitScope()
     {
         stack.pop();
     }

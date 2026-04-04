@@ -46,32 +46,11 @@ public class CodeGenerator
         //My code starts here
         for(ASTNode node : program)
         {
-            switch (node.type)
-            {
-                case nodeType.LetNode :
-                    emitLet((LetNode)node);
-                    break;
-
-                case nodeType.AssignmentNode:
-                    emitAssignment((AssignmentNode) node);
-                    break;
-
-                case nodeType.SwapNode:
-                    emitSwap((SwapNode) node);
-                    break;
-
-                case nodeType.InputNode:
-                    emitInput((InputNode) node);
-                    break;
-
-                case nodeType.PrintNode:
-                    emitPrint((PrintNode) node);
-                    break;
-            }
+            emitStatement(node);
         }
         //My code ends here
 
-        symbolTable.existScope();
+        symbolTable.exitScope();
         indent--;
         emit("}");
         indent--;
@@ -79,6 +58,48 @@ public class CodeGenerator
         outputCode();
         writer.close();
         compileAndRun();
+    }
+
+    private void emitStatement(ASTNode node)
+    {
+        switch (node.type)
+        {
+            case nodeType.LetNode :
+                emitLet((LetNode)node);
+                break;
+
+            case nodeType.AssignmentNode:
+                emitAssignment((AssignmentNode) node);
+                break;
+
+            case nodeType.SwapNode:
+                emitSwap((SwapNode) node);
+                break;
+
+            case nodeType.InputNode:
+                emitInput((InputNode) node);
+                break;
+
+            case nodeType.PrintNode:
+                emitPrint((PrintNode) node);
+                break;
+
+            case nodeType.BlockNode:
+                emitBlock((BlockNode) node);
+                break;
+        }
+    }
+
+    private void emitBlock(BlockNode node)
+    {
+        emit("{");
+        symbolTable.addScope();
+        for (ASTNode n : node.codeSnippet)
+        {
+            emitStatement(n);
+        }
+        symbolTable.exitScope();
+        emit("}");
     }
 
     private void emitLet(LetNode node)

@@ -21,7 +21,7 @@ public class Semantic_Analyzer
         {
             analyze(node);
         }
-        symboltable.existScope(); //Global scope end
+        symboltable.exitScope(); //Global scope end
     }
 
     private void analyze(ASTNode node) // Actual analysis
@@ -114,7 +114,7 @@ public class Semantic_Analyzer
         {
             analyze(itr.next());
         }
-        symboltable.existScope();
+        symboltable.exitScope();
     }
 
     private void analyzeElseIfPart(ElseifNode node)

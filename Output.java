@@ -471,5 +471,10 @@ public class Output {
 		y = new Variable( sc.nextInt());
 		z = Operation.Range(y , Operation.Add(y , new Variable(10)));
 		Operation.Minus(z , new Variable(5)).printVariable();
+		{
+		x = new Variable( sc.nextInt());
+		x.printVariable();
+		Operation.Equals(x , y).printVariable();
+		}
 	}
 }
