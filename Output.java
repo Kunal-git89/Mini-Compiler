@@ -466,6 +466,11 @@ public class Output {
 		a = new Variable( sc.nextInt());
 		while(Operation.LE(a , new Variable(100)).getBool())
 		{
+		if(Operation.Equals(a , new Variable(95)).getBool())
+		{
+		a = Operation.Add(a , new Variable(1));
+		continue;
+		}
 		a.printVariable();
 		a = Operation.Add(a , new Variable(1));
 		}
