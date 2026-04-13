@@ -18,7 +18,7 @@ while(a <= 100)
   if(a == 95)
   {
     a = a + 1;
-    continuel
+    continue;
   }
   print a;
   a = a + 1;
